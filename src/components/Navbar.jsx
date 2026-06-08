@@ -36,6 +36,7 @@ export default function Navbar() {
     { label: 'Home', to: '/', hash: '' },
     { label: 'Services', to: '/services', hash: '' },
     { label: 'Products', to: '/shop', hash: '' },
+    { label: 'Gallery', to: '/gallery', hash: '' },
     { label: 'About Us', to: '/about', hash: '' },
     { label: 'Contact', to: '/contact', hash: '' },
   ]
@@ -104,7 +105,12 @@ export default function Navbar() {
               </svg>
             </Link>
             
-            <Link to="/#contact" className="btn-red nav-cta-btn">Get a Quote</Link>
+            <Link
+              to="/quote"
+              className="btn-red nav-cta-btn"
+            >
+              Get a Quote
+            </Link>
           </div>
 
           <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
@@ -131,7 +137,12 @@ export default function Navbar() {
         ) : (
           <Link to="/login" onClick={() => setMenuOpen(false)}>Login</Link>
         )}
-        <Link to="/#contact" className="mob-cta" onClick={() => setMenuOpen(false)}>
+        <Link
+          to="/quote"
+          onClick={() => setMenuOpen(false)}
+          className="mob-cta"
+          style={{ width: '100%', display: 'block', textAlign: 'center', fontFamily: 'var(--font)' }}
+        >
           Get a Quote
         </Link>
       </div>

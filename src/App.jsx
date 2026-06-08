@@ -12,6 +12,8 @@ import RegisterPage from './pages/RegisterPage'
 import CartPage from './pages/CartPage'
 import AccountPage from './pages/AccountPage'
 import ProtectedRoute from './components/ProtectedRoute'
+import GalleryPage from './pages/GalleryPage'
+import QuotePage from './pages/QuotePage'
 
 // Admin pages
 import AdminLayout from './pages/admin/AdminLayout'
@@ -25,6 +27,9 @@ import ManageInquiries from './pages/admin/ManageInquiries'
 import ManageTestimonials from './pages/admin/ManageTestimonials'
 import ManageSEO from './pages/admin/ManageSEO'
 import Analytics from './pages/admin/Analytics'
+import ManageHero from './pages/admin/ManageHero'
+import ManageGallery from './pages/admin/ManageGallery'
+import ManageWhyUs from './pages/admin/ManageWhyUs'
 
 export default function App() {
   return (
@@ -47,8 +52,10 @@ export default function App() {
           <Route path="/shop" element={<ShopPage />} />
           <Route path="/shop/:id" element={<ProductDetailPage />} />
           <Route path="/services" element={<ServicesPage />} />
+          <Route path="/gallery" element={<GalleryPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/quote" element={<QuotePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/cart" element={<CartPage />} />
@@ -65,9 +72,12 @@ export default function App() {
           {/* Categories */}
           <Route path="categories" element={<ManageCategories />} />
           {/* Store */}
-<Route path="customers" element={<ManageCustomers />} />
+          <Route path="customers" element={<ManageCustomers />} />
           <Route path="inquiries" element={<ManageInquiries />} />
           {/* Content */}
+          <Route path="hero" element={<ManageHero />} />
+          <Route path="why-us" element={<ManageWhyUs />} />
+          <Route path="gallery" element={<ManageGallery />} />
           <Route path="services" element={<ManageServices />} />
           <Route path="testimonials" element={<ManageTestimonials />} />
           {/* Marketing & Admin */}

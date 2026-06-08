@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import FloatingContact from './FloatingContact'
+import QuoteModal from './QuoteModal'
 
 export default function Layout() {
   const { pathname, hash } = useLocation()
@@ -24,6 +25,7 @@ export default function Layout() {
       <Outlet />
       <Footer />
       <FloatingContact />
+      <QuoteModal />
     </>
   )
 }

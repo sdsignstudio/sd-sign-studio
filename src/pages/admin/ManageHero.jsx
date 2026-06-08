@@ -186,13 +186,47 @@ export default function ManageHero() {
                           <button type="button" onClick={() => handleChange('videoUrl', '')} style={{ border: 'none', background: 'none', color: '#dc2626', fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>Clear</button>
                         </div>
                       )}
-                      <input
-                        type="file"
-                        accept="video/*"
-                        onChange={e => handleFileUpload(e, 'video')}
-                        disabled={uploading !== null}
-                        style={{ fontSize: '13px' }}
-                      />
+                      <div style={{ position: 'relative', marginTop: '4px' }}>
+                        <input
+                          id="video-upload"
+                          type="file"
+                          accept="video/*"
+                          onChange={e => handleFileUpload(e, 'video')}
+                          disabled={uploading !== null}
+                          style={{ display: 'none' }}
+                        />
+                        <label
+                          htmlFor="video-upload"
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            padding: '10px 18px',
+                            background: uploading === 'video' ? '#f3f4f6' : '#ffffff',
+                            border: '1.5px solid #d1d5db',
+                            borderRadius: '8px',
+                            cursor: uploading === 'video' ? 'not-allowed' : 'pointer',
+                            fontSize: '13px',
+                            fontWeight: 600,
+                            color: '#374151',
+                            transition: 'all 0.2s',
+                          }}
+                          onMouseEnter={e => {
+                            if (uploading !== 'video') {
+                              e.currentTarget.style.borderColor = 'var(--red)';
+                              e.currentTarget.style.background = '#fcf8f8';
+                            }
+                          }}
+                          onMouseLeave={e => {
+                            if (uploading !== 'video') {
+                              e.currentTarget.style.borderColor = '#d1d5db';
+                              e.currentTarget.style.background = '#ffffff';
+                            }
+                          }}
+                        >
+                          <span>{uploading === 'video' ? '⏳ Uploading...' : '🎥 Choose Video File'}</span>
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -231,13 +265,47 @@ export default function ManageHero() {
                             <span style={{ fontSize: '11px', color: '#9ca3af' }}>No image uploaded</span>
                           )}
                           <div style={{ flex: 1 }}>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={e => handleFileUpload(e, idx.toString())}
-                              disabled={uploading !== null}
-                              style={{ fontSize: '12px' }}
-                            />
+                            <div style={{ position: 'relative', marginTop: '4px' }}>
+                              <input
+                                id={`slide-upload-${idx}`}
+                                type="file"
+                                accept="image/*"
+                                onChange={e => handleFileUpload(e, idx.toString())}
+                                disabled={uploading !== null}
+                                style={{ display: 'none' }}
+                              />
+                              <label
+                                htmlFor={`slide-upload-${idx}`}
+                                style={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '6px',
+                                  padding: '8px 14px',
+                                  background: uploading === idx.toString() ? '#f3f4f6' : '#ffffff',
+                                  border: '1.5px solid #d1d5db',
+                                  borderRadius: '6px',
+                                  cursor: uploading !== null ? 'not-allowed' : 'pointer',
+                                  fontSize: '12px',
+                                  fontWeight: 600,
+                                  color: '#374151',
+                                  transition: 'all 0.2s',
+                                }}
+                                onMouseEnter={e => {
+                                  if (uploading === null) {
+                                    e.currentTarget.style.borderColor = 'var(--red)';
+                                    e.currentTarget.style.background = '#fcf8f8';
+                                  }
+                                }}
+                                onMouseLeave={e => {
+                                  if (uploading === null) {
+                                    e.currentTarget.style.borderColor = '#d1d5db';
+                                    e.currentTarget.style.background = '#ffffff';
+                                  }
+                                }}
+                              >
+                                <span>{uploading === idx.toString() ? '⏳ Uploading...' : '🖼️ Upload Slide Image'}</span>
+                              </label>
+                            </div>
                           </div>
                         </div>
 

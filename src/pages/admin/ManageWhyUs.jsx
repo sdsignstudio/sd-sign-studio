@@ -171,13 +171,47 @@ export default function ManageWhyUs() {
                         <span style={{ fontSize: '11px', color: '#9ca3af' }}>No image</span>
                       )}
                       <div style={{ flex: 1 }}>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={e => handleFileUpload(e, idx)}
-                          disabled={uploading !== null}
-                          style={{ fontSize: '11px' }}
-                        />
+                        <div style={{ position: 'relative', marginTop: '4px' }}>
+                          <input
+                            id={`point-upload-${idx}`}
+                            type="file"
+                            accept="image/*"
+                            onChange={e => handleFileUpload(e, idx)}
+                            disabled={uploading !== null}
+                            style={{ display: 'none' }}
+                          />
+                          <label
+                            htmlFor={`point-upload-${idx}`}
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '6px',
+                              padding: '8px 14px',
+                              background: uploading === idx ? '#f3f4f6' : '#ffffff',
+                              border: '1.5px solid #d1d5db',
+                              borderRadius: '6px',
+                              cursor: uploading !== null ? 'not-allowed' : 'pointer',
+                              fontSize: '11px',
+                              fontWeight: 600,
+                              color: '#374151',
+                              transition: 'all 0.2s',
+                            }}
+                            onMouseEnter={e => {
+                              if (uploading === null) {
+                                e.currentTarget.style.borderColor = 'var(--red)';
+                                e.currentTarget.style.background = '#fcf8f8';
+                              }
+                            }}
+                            onMouseLeave={e => {
+                              if (uploading === null) {
+                                e.currentTarget.style.borderColor = '#d1d5db';
+                                e.currentTarget.style.background = '#ffffff';
+                              }
+                            }}
+                          >
+                            <span>{uploading === idx ? '⏳ Uploading...' : '🖼️ Upload Card Image'}</span>
+                          </label>
+                        </div>
                       </div>
                     </div>
                   </div>

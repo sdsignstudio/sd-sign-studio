@@ -302,8 +302,44 @@ export default function ProductForm() {
               )}
               <div>
                 <label style={labelStyle}>Add Gallery Images <span style={{ fontWeight: 400, color: '#9ca3af' }}>(select multiple)</span></label>
-                <input type="file" accept="image/*" multiple onChange={e => setGalleryFiles(Array.from(e.target.files))} style={{ ...inputStyle, padding: '8px' }} />
-                {galleryFiles.length > 0 && <p style={{ ...hint, color: '#6b7280' }}>{galleryFiles.length} file(s) selected</p>}
+                <div style={{ position: 'relative', marginTop: '6px' }}>
+                  <input
+                    id="gallery-images-upload"
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={e => setGalleryFiles(Array.from(e.target.files))}
+                    style={{ display: 'none' }}
+                  />
+                  <label
+                    htmlFor="gallery-images-upload"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '10px 18px',
+                      background: '#ffffff',
+                      border: '1.5px solid #d1d5db',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      fontSize: '13px',
+                      fontWeight: 600,
+                      color: '#374151',
+                      transition: 'all 0.2s',
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.borderColor = 'var(--red)';
+                      e.currentTarget.style.background = '#fcf8f8';
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.borderColor = '#d1d5db';
+                      e.currentTarget.style.background = '#ffffff';
+                    }}
+                  >
+                    <span>📷 Select Gallery Images</span>
+                  </label>
+                </div>
+                {galleryFiles.length > 0 && <p style={{ ...hint, color: '#166534', fontWeight: 600, marginTop: '8px' }}>✅ {galleryFiles.length} file(s) selected</p>}
               </div>
             </div>
 
@@ -347,13 +383,46 @@ export default function ProductForm() {
               {primaryPreview && (
                 <img src={primaryPreview} alt="Preview" style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', borderRadius: '8px', marginBottom: '12px', border: '1.5px solid #e5e7eb' }} />
               )}
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handlePrimaryImage}
-                required={!isEditing && !form.primary_image}
-                style={{ ...inputStyle, padding: '8px' }}
-              />
+              <div style={{ position: 'relative', marginTop: '6px' }}>
+                <input
+                  id="primary-image-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={handlePrimaryImage}
+                  required={!isEditing && !form.primary_image}
+                  style={{ display: 'none' }}
+                />
+                <label
+                  htmlFor="primary-image-upload"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '10px 18px',
+                    background: '#ffffff',
+                    border: '1.5px solid #d1d5db',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    fontSize: '13px',
+                    fontWeight: 600,
+                    color: '#374151',
+                    transition: 'all 0.2s',
+                    width: '100%',
+                    justifyContent: 'center',
+                    boxSizing: 'border-box'
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.borderColor = 'var(--red)';
+                    e.currentTarget.style.background = '#fcf8f8';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.borderColor = '#d1d5db';
+                    e.currentTarget.style.background = '#ffffff';
+                  }}
+                >
+                  <span>🖼️ Choose Primary Image</span>
+                </label>
+              </div>
               {primaryImageFile && <p style={hint}>{primaryImageFile.name}</p>}
               {isEditing && !primaryImageFile && <p style={hint}>Leave empty to keep current image.</p>}
             </div>

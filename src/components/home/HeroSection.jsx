@@ -179,7 +179,7 @@ export default function HeroSection() {
         {/* Overlay gradient - centered dark screen to see the media clearly */}
         <div className="hero-overlay" style={{ background: 'rgba(10, 10, 10, 0.6)' }}></div>
 
-        <div className="hero-content" style={{ height: '88vh', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', maxWidth: '800px', margin: '0 auto', width: '100%', padding: '12px 10px' }}>
+        <div className="hero-content" style={{ height: '88vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', maxWidth: '800px', margin: '0 auto', width: '100%', padding: '12px 10px' }}>
 
           <div className="hero-eyebrow" style={{ background: 'rgba(232,0,13,0.12)', border: '1px solid rgba(232,0,13,0.3)', color: 'var(--red)', margin: '0 0 20px' }}>
             Signage &amp; Wrapping Studio

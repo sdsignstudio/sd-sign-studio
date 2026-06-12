@@ -238,7 +238,7 @@
   letter-spacing: 2px; text-transform: uppercase;
 }
 .section-title {
-  font-size: clamp(40px, 5.5vw, 64px); font-weight: 900; text-transform: capitalize; letter-spacing: -1.5px;
+  font-size: clamp(36px, 5vw, 52px); font-weight: 900; text-transform: capitalize; letter-spacing: -1.5px;
   color: var(--white); line-height: 1.1;
 }
 .section-title .red { 
@@ -320,7 +320,7 @@
   letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px;
 }
 .about-heading {
-  font-size: clamp(40px, 5.5vw, 64px); font-weight: 900;
+  font-size: clamp(36px, 5vw, 52px); font-weight: 900;
   line-height: 1.1; color: var(--white); margin-bottom: 0; text-align: left; letter-spacing: -1.5px;
 }
 .about-heading .red { 
@@ -347,7 +347,7 @@
   background: rgba(0,0,0,0.05); border-color: rgba(0,0,0,0.1); color: var(--black);
 }
 .bento-content h2 {
-  font-size: clamp(40px, 5.5vw, 64px); font-weight: 900;
+  font-size: clamp(36px, 5vw, 52px); font-weight: 900;
   text-transform: capitalize; line-height: 1.1; color: var(--black);
   margin-bottom: 24px; letter-spacing: -1.5px;
 }
@@ -397,10 +397,10 @@
   padding: 32px 24px; display: flex; flex-direction: column; flex-grow: 1;
 }
 .srv-title {
-  font-size: 24px; font-weight: 800; color: var(--black); margin-bottom: 16px; line-height: 1.2;
+  font-size: 19px; font-weight: 800; color: var(--black); margin-bottom: 16px; line-height: 1.2;
 }
 .srv-desc {
-  font-size: 18px; color: rgba(0,0,0,0.6); line-height: 1.7; margin-bottom: 32px; flex-grow: 1;
+  font-size: 14px; color: rgba(0,0,0,0.6); line-height: 1.7; margin-bottom: 32px; flex-grow: 1;
 }
 .srv-btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
@@ -674,7 +674,7 @@ footer {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
 }
 .shop-banner h1 {
-  font-size: clamp(40px, 5.5vw, 64px); font-weight: 900;
+  font-size: clamp(36px, 5vw, 52px); font-weight: 900;
   color: #fff; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 12px;
 }
 .shop-banner p {

@@ -28,7 +28,7 @@ export default function QuotePage() {
           }}>
             Booking &amp; Quotes
           </span>
-          <h1 style={{ fontSize: 'clamp(40px, 5.5vw, 64px)', fontWeight: 900, color: '#111827', margin: '0 0 12px', letterSpacing: '-1.5px', lineHeight: 1.1 }}>
+          <h1 style={{ fontSize: 'clamp(36px, 5vw, 52px)', fontWeight: 900, color: '#111827', margin: '0 0 12px', letterSpacing: '-1.5px', lineHeight: 1.1 }}>
             Request a Free <span style={{ color: 'var(--red)' }}>Estimate</span>
           </h1>
           <p style={{ fontSize: '15px', color: '#4b5563', lineHeight: 1.6, margin: 0, maxWidth: '560px', marginLeft: 'auto', marginRight: 'auto' }}>

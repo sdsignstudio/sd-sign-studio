@@ -92,7 +92,7 @@ export default function WhyChooseUs() {
             {settings.badge || "Why Partner With Us"}
           </span>
           <h2 style={{ 
-            fontSize: 'clamp(40px, 5.5vw, 64px)', 
+            fontSize: 'clamp(36px, 5vw, 52px)', 
             fontWeight: 900, 
             color: '#111827', 
             lineHeight: 1.15,

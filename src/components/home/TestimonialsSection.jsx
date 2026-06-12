@@ -111,7 +111,7 @@ export default function TestimonialsSection() {
           <span className="section-eyebrow" style={{ background: 'rgba(232,0,13,0.06)', border: '1px solid rgba(232,0,13,0.12)', color: 'var(--red)', borderRadius: '20px', padding: '6px 14px', fontSize: '11px', fontWeight: 800, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '20px', display: 'inline-block' }}>
             Reviews &amp; Testimonials
           </span>
-          <h2 className="section-title" style={{ fontSize: 'clamp(40px, 5.5vw, 64px)', fontWeight: 900, color: '#111827', lineHeight: 1.15, margin: '0 0 20px', letterSpacing: '-1.5px' }}>
+          <h2 className="section-title" style={{ fontSize: 'clamp(36px, 5vw, 52px)', fontWeight: 900, color: '#111827', lineHeight: 1.15, margin: '0 0 20px', letterSpacing: '-1.5px' }}>
             What Our Customers <span className="red" style={{ color: 'var(--red)' }}>Say About Us</span>
           </h2>
           <button 

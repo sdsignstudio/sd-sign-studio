@@ -93,7 +93,7 @@ export default function ContactPage() {
 
             {/* ── Contact Info ── */}
             <div>
-              <h2 style={{ fontSize: 'clamp(40px, 5.5vw, 64px)', fontWeight: 900, color: 'var(--text-primary)', marginBottom: '16px', letterSpacing: '-1.5px', lineHeight: 1.1 }}>
+              <h2 style={{ fontSize: 'clamp(36px, 5vw, 52px)', fontWeight: 900, color: 'var(--text-primary)', marginBottom: '16px', letterSpacing: '-1.5px', lineHeight: 1.1 }}>
                 Let's Build Something Great
               </h2>
               <p style={{ fontSize: '16px', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '32px' }}>

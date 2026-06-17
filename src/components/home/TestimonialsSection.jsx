@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 
 const MOCK_REVIEWS = [
@@ -13,6 +13,7 @@ export default function TestimonialsSection() {
   const [loading, setLoading] = useState(true)
   const [itemsPerPage, setItemsPerPage] = useState(3)
   const [startIndex, setStartIndex] = useState(0)
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 640)
   
   // Review Modal State
   const [showModal, setShowModal] = useState(false)
@@ -45,9 +46,11 @@ export default function TestimonialsSection() {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 640) {
+      const w = window.innerWidth
+      setIsMobile(w < 640)
+      if (w < 640) {
         setItemsPerPage(1)
-      } else if (window.innerWidth < 960) {
+      } else if (w < 960) {
         setItemsPerPage(2)
       } else {
         setItemsPerPage(3)
@@ -67,6 +70,16 @@ export default function TestimonialsSection() {
   const handlePrev = () => {
     if (startIndex > 0) {
       setStartIndex(prev => prev - 1)
+    }
+  }
+
+  const touchStartX = useRef(null)
+  const handleTouchStart = (e) => { touchStartX.current = e.touches[0].clientX }
+  const handleTouchEnd = (e) => {
+    const diff = touchStartX.current - e.changedTouches[0].clientX
+    if (Math.abs(diff) > 40) {
+      if (diff > 0) handleNext()
+      else handlePrev()
     }
   }
 
@@ -119,7 +132,8 @@ export default function TestimonialsSection() {
         {/* Carousel with flanking arrows */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '100%' }}>
 
-          {/* Left Arrow */}
+          {/* Left Arrow — desktop only */}
+          {!isMobile && (
           <button
             onClick={handlePrev}
             disabled={startIndex === 0}
@@ -144,9 +158,14 @@ export default function TestimonialsSection() {
           >
             &larr;
           </button>
+          )}
 
           {/* Sliding Carousel Viewport */}
-          <div style={{ flex: 1, overflow: 'hidden', padding: '12px 4px 24px' }}>
+          <div
+            style={{ flex: 1, overflow: 'hidden', padding: '12px 4px 24px' }}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
             <div style={{
               display: 'flex',
               gap: '24px',
@@ -252,7 +271,8 @@ export default function TestimonialsSection() {
             </div>
           </div>
 
-          {/* Right Arrow */}
+          {/* Right Arrow — desktop only */}
+          {!isMobile && (
           <button
             onClick={handleNext}
             disabled={startIndex >= reviews.length - itemsPerPage}
@@ -277,6 +297,7 @@ export default function TestimonialsSection() {
           >
             &rarr;
           </button>
+          )}
 
         </div>
 

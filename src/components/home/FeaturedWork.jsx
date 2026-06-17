@@ -12,10 +12,17 @@ const slides = [
 
 export default function FeaturedWork() {
   const [idx, setIdx] = useState(0)
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 640)
   const total = slides.length
   const autoRef = useRef(null)
   const trackRef = useRef(null)
   const touchStartX = useRef(0)
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 640)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const resetAuto = useCallback(() => {
     if (autoRef.current) clearInterval(autoRef.current)
@@ -59,38 +66,69 @@ export default function FeaturedWork() {
           <span className="section-eyebrow">Portfolio</span>
           <h2 className="section-title">Featured <span className="red">Work</span></h2>
         </div>
-        <div style={{ position: 'relative' }}>
-          <div className="featured-slider-wrap">
+
+        {isMobile ? (
+          /* ── Mobile: flat swipeable slider, full landscape image visible ── */
+          <div style={{ marginTop: '28px' }}>
             <div
-              className="featured-track"
-              ref={trackRef}
+              style={{ overflow: 'hidden', borderRadius: '12px' }}
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
             >
-              {slides.map((s, i) => (
-                <div
-                  className="featured-slide"
-                  key={i}
-                  style={getStyle(i)}
-                  onClick={() => i !== idx && goTo(i)}
-                >
-                  <img src={s.src} alt={s.alt} />
-                </div>
+              <div style={{
+                display: 'flex',
+                transition: 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)',
+                transform: `translateX(-${idx * 100}%)`
+              }}>
+                {slides.map((s, i) => (
+                  <div key={i} style={{ flex: '0 0 100%', borderRadius: '12px', overflow: 'hidden' }}>
+                    <img
+                      src={s.src}
+                      alt={s.alt}
+                      style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'contain' }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="feat-dots" style={{ marginTop: '16px' }}>
+              {slides.map((_, i) => (
+                <div key={i} className={`feat-dot ${i === idx ? 'active' : ''}`} onClick={() => goTo(i)} />
               ))}
             </div>
           </div>
-          <button className="feat-arr prev" onClick={() => slide(-1)} aria-label="Previous">&#8249;</button>
-          <button className="feat-arr next" onClick={() => slide(1)} aria-label="Next">&#8250;</button>
-        </div>
-        <div className="feat-dots">
-          {slides.map((_, i) => (
-            <div
-              key={i}
-              className={`feat-dot ${i === idx ? 'active' : ''}`}
-              onClick={() => goTo(i)}
-            />
-          ))}
-        </div>
+        ) : (
+          /* ── Desktop: 3D coverflow ── */
+          <div style={{ position: 'relative' }}>
+            <div className="featured-slider-wrap">
+              <div
+                className="featured-track"
+                ref={trackRef}
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+              >
+                {slides.map((s, i) => (
+                  <div
+                    className="featured-slide"
+                    key={i}
+                    style={getStyle(i)}
+                    onClick={() => i !== idx && goTo(i)}
+                  >
+                    <img src={s.src} alt={s.alt} />
+                  </div>
+                ))}
+              </div>
+            </div>
+            <button className="feat-arr prev" onClick={() => slide(-1)} aria-label="Previous">&#8249;</button>
+            <button className="feat-arr next" onClick={() => slide(1)} aria-label="Next">&#8250;</button>
+            <div className="feat-dots">
+              {slides.map((_, i) => (
+                <div key={i} className={`feat-dot ${i === idx ? 'active' : ''}`} onClick={() => goTo(i)} />
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="section-footer">
           <a href="#" className="btn-red">View All Projects</a>
         </div>

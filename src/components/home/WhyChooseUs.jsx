@@ -149,13 +149,15 @@ export default function WhyChooseUs() {
               display: 'flex',
               gap: '24px',
               transition: 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
-              transform: `translateX(calc(-${startIndex} * (100% + 24px) / ${itemsPerPage}))`
+              transform: isMobile
+                ? `translateX(calc(-${startIndex} * (82% + 24px)))`
+                : `translateX(calc(-${startIndex} * (100% + 24px) / ${itemsPerPage}))`
             }}>
               {points.map((pt, i) => (
                 <div
                   key={i}
                   style={{
-                    flex: `0 0 calc((100% - ${(itemsPerPage - 1) * 24}px) / ${itemsPerPage})`,
+                    flex: isMobile ? '0 0 82%' : `0 0 calc((100% - ${(itemsPerPage - 1) * 24}px) / ${itemsPerPage})`,
                     background: '#f9f9f9',
                     borderRadius: '16px',
                     border: '1px solid rgba(0,0,0,0.05)',

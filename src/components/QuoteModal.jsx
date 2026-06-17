@@ -7,6 +7,19 @@ export default function QuoteModal() {
   useEffect(() => {
     const handleOpen = () => setIsOpen(true)
     window.addEventListener('open-quote-modal', handleOpen)
+
+    // Auto-open after 15 s, once per browser session
+    if (!sessionStorage.getItem('quote-modal-shown')) {
+      const timer = setTimeout(() => {
+        sessionStorage.setItem('quote-modal-shown', '1')
+        setIsOpen(true)
+      }, 15000)
+      return () => {
+        window.removeEventListener('open-quote-modal', handleOpen)
+        clearTimeout(timer)
+      }
+    }
+
     return () => window.removeEventListener('open-quote-modal', handleOpen)
   }, [])
 

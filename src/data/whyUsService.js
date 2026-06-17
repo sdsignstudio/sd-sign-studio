@@ -6,22 +6,22 @@ const DEFAULT_SETTINGS = {
     {
       image: "/images/client-images/van_wrapping.jpg",
       title: "Shop Front Signs",
-      desc: "We make exterior commercial and retail signs easy—from initial site survey to final installation. Creating the perfect storefront is crucial for exposing your brand and making a memorable first impression."
+      desc: "From site survey to installation, we create stunning exterior signs that make your storefront impossible to ignore."
     },
     {
       image: "/images/client-images/WhatsApp Image 2026-05-17 at 11.20.17 PM (2).jpeg",
       title: "Vehicle Graphics & Wrapping",
-      desc: "Vehicle vinyl wraps are available in striking matt or gloss finishes. Whether solid colours or printed bespoke artwork, our van sign writing completely changes the look of your vehicle while protecting the paint."
+      desc: "Bold matt or gloss vinyl wraps that transform your vehicle's look and protect the paintwork underneath."
     },
     {
       image: "/images/client-images/car2.jpg",
       title: "3D Lettering Signs",
-      desc: "Put some pow into your brand with our carefully crafted 3D lettering. Made from robust materials like metal, wood, or acrylic, they can be flat-cut or built up into a hollow finish for extra depth and LED halo illumination."
+      desc: "Eye-catching 3D letters in metal, wood, or acrylic — flat-cut or built up with LED halo illumination."
     },
     {
       image: "/images/client-images/van_wrapping_2.webp",
       title: "Illuminated & Neon Signs",
-      desc: "Day or night, give your office, shop, or café a stunning glow with bespoke illuminated and neon signs. We combine metal frameworks with long-lasting LEDs for pure electric magic."
+      desc: "Bespoke illuminated and neon signs that give your premises a stunning glow day and night."
     }
   ]
 }

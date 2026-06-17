@@ -328,13 +328,13 @@
   -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; 
 }
 .about-desc {
-  font-size: 17px; line-height: 1.7; color: rgba(255,255,255,0.7);
+  font-size: 18px; line-height: 1.7; color: rgba(255,255,255,0.7);
   margin: 24px 0 32px; text-align: left;
 }
 .about-bullets { display: flex; flex-direction: column; gap: 20px; margin-bottom: 32px; }
 .about-bullet { display: flex; gap: 16px; align-items: flex-start; }
 .about-bullet-icon { color: var(--red); flex-shrink: 0; margin-top: 2px; }
-.about-bullet p { margin: 0; font-size: 16px; color: rgba(255,255,255,0.8); line-height: 1.6; }
+.about-bullet p { margin: 0; font-size: 18px; color: rgba(255,255,255,0.8); line-height: 1.7; }
 
 
 /* ── BENTO SEO SECTION ── */
@@ -400,7 +400,8 @@
   font-size: 19px; font-weight: 800; color: var(--black); margin-bottom: 16px; line-height: 1.2;
 }
 .srv-desc {
-  font-size: 14px; color: rgba(0,0,0,0.6); line-height: 1.7; margin-bottom: 32px; flex-grow: 1;
+  font-size: 18px; color: rgba(0,0,0,0.7); line-height: 1.7; margin-bottom: 32px; flex-grow: 1;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
 .srv-btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;

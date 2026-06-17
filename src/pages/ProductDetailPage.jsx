@@ -73,7 +73,7 @@ export default function ProductDetailPage() {
   )
 
   const whatsappMessage = encodeURIComponent(`Hi, I'm interested in the ${product.name}. Could I get more information?`)
-  const whatsappUrl = `https://wa.me/447715669077?text=${whatsappMessage}`
+  const whatsappUrl = `https://wa.me/919676112750?text=${whatsappMessage}`
   const descText = product.full_description || product.longDescription || product.description || product.shortDescription || ''
 
   const allSpecs = [
@@ -167,19 +167,20 @@ export default function ProductDetailPage() {
             £{Number(product.price).toLocaleString()}
           </div>
 
-          <p style={{ fontSize: '17px', color: '#555', lineHeight: 1.7, marginBottom: '32px', paddingBottom: '32px', borderBottom: '1px solid #f3f4f6' }}>
+          <p style={{ fontSize: '18px', color: 'rgba(0,0,0,0.7)', lineHeight: 1.7, marginBottom: '32px', paddingBottom: '32px', borderBottom: '1px solid #f3f4f6' }}>
             {product.shortDescription}
           </p>
 
           {/* Trust badges */}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '32px' }}>
             {[
-              { icon: '✓', text: 'Premium Materials' },
-              { icon: '✓', text: 'Expert Installation' },
-              { icon: '✓', text: '12-Month Warranty' },
+              { text: 'Premium Materials' },
+              { text: 'Expert Installation' },
+              { text: '12-Month Warranty' },
             ].map(b => (
-              <div key={b.text} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '7px 14px', background: '#f9fafb', border: '1.5px solid #e5e7eb', borderRadius: '20px', fontSize: '13px', fontWeight: 600, color: '#374151' }}>
-                <span style={{ color: '#16a34a', fontWeight: 900 }}>{b.icon}</span> {b.text}
+              <div key={b.text} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '7px 14px', background: '#f9fafb', border: '1.5px solid #e5e7eb', borderRadius: '20px', fontSize: '18px', fontWeight: 600, color: '#374151' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                {b.text}
               </div>
             ))}
           </div>
@@ -244,9 +245,9 @@ export default function ProductDetailPage() {
             <div style={{ maxWidth: '800px' }}>
               <h2 style={{ fontSize: '22px', fontWeight: 800, color: '#111', marginBottom: '20px' }}>Product Overview</h2>
               {descText ? (
-                <p style={{ fontSize: '16px', color: '#4b5563', lineHeight: 1.9 }}>{descText}</p>
+                <p style={{ fontSize: '18px', color: 'rgba(0,0,0,0.7)', lineHeight: 1.7 }}>{descText}</p>
               ) : (
-                <p style={{ fontSize: '16px', color: '#9ca3af', fontStyle: 'italic' }}>
+                <p style={{ fontSize: '18px', color: 'rgba(0,0,0,0.7)', lineHeight: 1.7, fontStyle: 'italic' }}>
                   Detailed description coming soon. Contact us for more information about this product.
                 </p>
               )}
@@ -254,15 +255,27 @@ export default function ProductDetailPage() {
               {/* Quick info cards */}
               <div className="pd-info-cards">
                 {[
-                  { icon: '🏆', label: 'Premium Quality', sub: 'Industry-leading materials' },
-                  { icon: '🔧', label: 'Pro Install', sub: 'Expert technicians' },
-                  { icon: '📅', label: 'Fast Turnaround', sub: '3–5 working days' },
-                  { icon: '🛡️', label: '1-Year Warranty', sub: 'Workmanship guarantee' },
+                  {
+                    icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--red)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>,
+                    label: 'Premium Quality', sub: 'Industry-leading materials'
+                  },
+                  {
+                    icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--red)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>,
+                    label: 'Pro Install', sub: 'Expert technicians'
+                  },
+                  {
+                    icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--red)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,
+                    label: 'Fast Turnaround', sub: '3–5 working days'
+                  },
+                  {
+                    icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--red)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
+                    label: '1-Year Warranty', sub: 'Workmanship guarantee'
+                  },
                 ].map(c => (
                   <div key={c.label} style={{ padding: '20px 16px', background: '#f9fafb', border: '1.5px solid #f3f4f6', borderRadius: '12px', textAlign: 'center' }}>
-                    <div style={{ fontSize: '28px', marginBottom: '8px' }}>{c.icon}</div>
-                    <div style={{ fontSize: '13px', fontWeight: 800, color: '#111', marginBottom: '4px' }}>{c.label}</div>
-                    <div style={{ fontSize: '12px', color: '#9ca3af' }}>{c.sub}</div>
+                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '10px' }}>{c.icon}</div>
+                    <div style={{ fontSize: '18px', fontWeight: 800, color: '#111', marginBottom: '4px' }}>{c.label}</div>
+                    <div style={{ fontSize: '18px', color: 'rgba(0,0,0,0.7)', lineHeight: 1.7 }}>{c.sub}</div>
                   </div>
                 ))}
               </div>
@@ -274,7 +287,7 @@ export default function ProductDetailPage() {
             <div>
               <h2 style={{ fontSize: '22px', fontWeight: 800, color: '#111', marginBottom: '24px' }}>Product Specifications</h2>
               {specs.length === 0 ? (
-                <p style={{ fontSize: '15px', color: '#9ca3af', fontStyle: 'italic' }}>
+                <p style={{ fontSize: '18px', color: 'rgba(0,0,0,0.7)', lineHeight: 1.7, fontStyle: 'italic' }}>
                   Specifications not yet added. Contact us for full product details.
                 </p>
               ) : (
@@ -284,10 +297,10 @@ export default function ProductDetailPage() {
                       <tbody>
                         {specs.map(({ label, value }, i) => (
                           <tr key={label} style={{ borderBottom: i < specs.length - 1 ? '1px solid #f3f4f6' : 'none' }}>
-                            <td style={{ fontWeight: 700, color: '#374151', background: '#f9fafb', width: '38%', borderRight: '1px solid #f3f4f6' }}>
+                            <td style={{ fontSize: '18px', fontWeight: 700, color: '#374151', background: '#f9fafb', width: '38%', borderRight: '1px solid #f3f4f6' }}>
                               {label}
                             </td>
-                            <td style={{ color: '#111', background: i % 2 === 0 ? '#fff' : '#fafafa' }}>
+                            <td style={{ fontSize: '18px', color: 'rgba(0,0,0,0.7)', lineHeight: 1.7, background: i % 2 === 0 ? '#fff' : '#fafafa' }}>
                               {value}
                             </td>
                           </tr>
@@ -295,7 +308,7 @@ export default function ProductDetailPage() {
                       </tbody>
                     </table>
                   </div>
-                  <p style={{ fontSize: '13px', color: '#9ca3af', marginTop: '16px' }}>
+                  <p style={{ fontSize: '18px', color: 'rgba(0,0,0,0.7)', lineHeight: 1.7, marginTop: '16px' }}>
                     * Specifications may vary by vehicle model and chosen finish. Contact us for a tailored quote.
                   </p>
                 </>
@@ -307,14 +320,16 @@ export default function ProductDetailPage() {
           {activeTab === 'Why Choose Us' && (
             <div>
               <h2 style={{ fontSize: '22px', fontWeight: 800, color: '#111', marginBottom: '8px' }}>Why Choose SD Sign Studio?</h2>
-              <p style={{ fontSize: '15px', color: '#6b7280', marginBottom: '32px', lineHeight: 1.7 }}>
+              <p style={{ fontSize: '18px', color: 'rgba(0,0,0,0.7)', marginBottom: '32px', lineHeight: 1.7 }}>
                 We've been transforming vehicles and businesses across Glasgow for years. Here's what sets us apart:
               </p>
               <div className="pd-why-grid">
                 {features.map((feat, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '14px', padding: '18px 20px', background: '#f9fafb', border: '1.5px solid #f3f4f6', borderRadius: '12px' }}>
-                    <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(232,0,13,0.1)', color: '#E8000D', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontWeight: 900, fontSize: '14px' }}>✓</div>
-                    <span style={{ fontSize: '14px', color: '#374151', fontWeight: 600, lineHeight: 1.5 }}>{feat}</span>
+                    <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(232,0,13,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E8000D" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <span style={{ fontSize: '18px', color: 'rgba(0,0,0,0.7)', lineHeight: 1.7 }}>{feat}</span>
                   </div>
                 ))}
               </div>
@@ -322,7 +337,7 @@ export default function ProductDetailPage() {
               {/* CTA */}
               <div style={{ marginTop: '36px', padding: '28px 28px', background: 'linear-gradient(135deg, #111 0%, #1a1a1a 100%)', borderRadius: '16px' }}>
                 <p style={{ fontSize: '18px', fontWeight: 800, color: '#fff', margin: '0 0 6px' }}>Ready to get started?</p>
-                <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.55)', margin: '0 0 20px' }}>Get a free quote — no obligation.</p>
+                <p style={{ fontSize: '18px', color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, margin: '0 0 20px' }}>Get a free quote — no obligation.</p>
                 <Link
                   to="/quote"
                   className="btn-red"

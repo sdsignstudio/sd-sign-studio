@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import CtaBand from '../components/home/CtaBand'
 
 export default function GalleryPage() {
-  const [activeTab, setActiveTab] = useState('all')
+  const location = useLocation()
+  const initialCategory = new URLSearchParams(location.search).get('category') || 'all'
+  const [activeTab, setActiveTab] = useState(initialCategory)
   const [selectedImage, setSelectedImage] = useState(null)
   const [services, setServices] = useState([])
   const [galleryItems, setGalleryItems] = useState([])

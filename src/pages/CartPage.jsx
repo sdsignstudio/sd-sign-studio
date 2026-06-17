@@ -20,7 +20,7 @@ export default function CartPage() {
 
     text += `\n*Total Estimate: £${cartTotal.toLocaleString()}*\n\nPlease let me know the next steps to confirm my booking.`
 
-    const whatsappUrl = `https://wa.me/447715669077?text=${encodeURIComponent(text)}`
+    const whatsappUrl = `https://wa.me/919676112750?text=${encodeURIComponent(text)}`
     window.open(whatsappUrl, '_blank')
   }
 

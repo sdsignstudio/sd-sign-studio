@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { uploadToCloudinary } from '../lib/cloudinary'
 import toast from 'react-hot-toast'
@@ -18,7 +18,7 @@ const inpStyleTemplate = {
   width: '100%',
   padding: '12px 14px',
   borderRadius: '8px',
-  fontSize: '14px',
+  fontSize: '18px',
   fontFamily: 'var(--font)',
   outline: 'none',
   boxSizing: 'border-box',
@@ -40,6 +40,13 @@ export default function ContactForm({ isHome = false, theme = 'dark', onSuccess 
   const [sending, setSending] = useState(false)
   const [isDragOver, setIsDragOver] = useState(false)
   const fileInputRef = useRef(null)
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 640)
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 640)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const isLight = theme === 'light'
 
@@ -52,7 +59,7 @@ export default function ContactForm({ isHome = false, theme = 'dark', onSuccess 
 
   const lblStyle = {
     display: 'block',
-    fontSize: '13px',
+    fontSize: '18px',
     fontWeight: 700,
     color: isLight ? '#374151' : 'var(--text)',
     marginBottom: '6px',
@@ -203,8 +210,8 @@ export default function ContactForm({ isHome = false, theme = 'dark', onSuccess 
 
   return (
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: isHome ? '1fr 1fr' : '1fr', gap: '16px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: (isHome && !isMobile) ? '1fr 1fr' : '1fr', gap: '16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '16px' }}>
           <div>
             <label style={lblStyle}>First Name *</label>
             <input
@@ -234,7 +241,7 @@ export default function ContactForm({ isHome = false, theme = 'dark', onSuccess 
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '16px' }}>
           <div>
             <label style={lblStyle}>Email Address *</label>
             <input
@@ -265,7 +272,7 @@ export default function ContactForm({ isHome = false, theme = 'dark', onSuccess 
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: isHome ? '1fr 1fr' : '1fr', gap: '16px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: (isHome && !isMobile) ? '1fr 1fr' : '1fr', gap: '16px' }}>
         <div>
           <label style={lblStyle}>Service Interested In</label>
           <select
@@ -308,7 +315,7 @@ export default function ContactForm({ isHome = false, theme = 'dark', onSuccess 
             }}
           >
             <span style={{ fontSize: '18px' }}>📁</span>
-            <span style={{ fontSize: '13px', fontWeight: 600, color: isLight ? '#475569' : 'var(--text-light)' }}>
+            <span style={{ fontSize: '18px', fontWeight: 600, color: isLight ? '#475569' : 'var(--text-light)' }}>
               {isDragOver ? 'Drop files here' : 'Drag & drop or Click to upload'}
             </span>
             <input
@@ -373,7 +380,7 @@ export default function ContactForm({ isHome = false, theme = 'dark', onSuccess 
           color: sending ? (isLight ? '#94a3b8' : 'var(--text-light)') : '#fff',
           border: 'none',
           borderRadius: '8px',
-          fontSize: '14px',
+          fontSize: '18px',
           fontWeight: 800,
           letterSpacing: '1px',
           textTransform: 'uppercase',

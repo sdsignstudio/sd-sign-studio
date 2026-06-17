@@ -107,201 +107,197 @@ export default function TestimonialsSection() {
       <div className="section-inner" style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px', position: 'relative' }}>
         
         {/* Centered Header */}
-        <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '56px', paddingLeft: '80px', paddingRight: '80px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '56px' }}>
           <span className="section-eyebrow" style={{ background: 'rgba(232,0,13,0.06)', border: '1px solid rgba(232,0,13,0.12)', color: 'var(--red)', borderRadius: '20px', padding: '6px 14px', fontSize: '11px', fontWeight: 800, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '20px', display: 'inline-block' }}>
             Reviews &amp; Testimonials
           </span>
-          <h2 className="section-title" style={{ fontSize: 'clamp(36px, 5vw, 52px)', fontWeight: 900, color: '#111827', lineHeight: 1.15, margin: '0 0 20px', letterSpacing: '-1.5px' }}>
+          <h2 className="section-title" style={{ fontSize: 'clamp(36px, 5vw, 52px)', fontWeight: 900, color: '#111827', lineHeight: 1.15, margin: 0, letterSpacing: '-1.5px' }}>
             What Our Customers <span className="red" style={{ color: 'var(--red)' }}>Say About Us</span>
           </h2>
-          <button 
-            onClick={() => setShowModal(true)} 
-            className="btn-red" 
-            style={{ 
-              padding: '10px 20px', 
-              fontSize: '13px', 
-              borderRadius: '8px', 
-              fontWeight: 700, 
+        </div>
+
+        {/* Carousel with flanking arrows */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '100%' }}>
+
+          {/* Left Arrow */}
+          <button
+            onClick={handlePrev}
+            disabled={startIndex === 0}
+            style={{
+              flexShrink: 0,
+              width: '48px',
+              height: '48px',
+              borderRadius: '50%',
+              border: '2px solid var(--red)',
+              background: startIndex === 0 ? 'rgba(232,0,13,0.08)' : 'var(--red)',
+              color: '#fff',
+              fontSize: '20px',
+              fontWeight: 'bold',
+              cursor: startIndex === 0 ? 'default' : 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.2s',
+              opacity: startIndex === 0 ? 0.35 : 1,
+              boxShadow: startIndex === 0 ? 'none' : '0 4px 12px rgba(232,0,13,0.25)'
+            }}
+          >
+            &larr;
+          </button>
+
+          {/* Sliding Carousel Viewport */}
+          <div style={{ flex: 1, overflow: 'hidden', padding: '12px 4px 24px' }}>
+            <div style={{
+              display: 'flex',
+              gap: '24px',
+              transition: 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+              transform: `translateX(calc(-${startIndex} * (100% + 24px) / ${itemsPerPage}))`
+            }}>
+              {reviews.map((rev, i) => (
+                <div
+                  key={rev.id || i}
+                  style={{
+                    flex: `0 0 calc((100% - ${(itemsPerPage - 1) * 24}px) / ${itemsPerPage})`,
+                    background: '#ffffff',
+                    padding: '32px',
+                    borderRadius: '16px',
+                    border: '1.5px solid #e5e7eb',
+                    boxShadow: '0 4px 20px rgba(0,0,0,0.02)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    position: 'relative',
+                    transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                    cursor: 'pointer',
+                    boxSizing: 'border-box'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-6px)'
+                    e.currentTarget.style.borderColor = 'rgba(232,0,13,0.3)'
+                    e.currentTarget.style.boxShadow = '0 12px 30px rgba(232,0,13,0.06)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = ''
+                    e.currentTarget.style.borderColor = '#e5e7eb'
+                    e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.02)'
+                  }}
+                >
+                  {/* Quote Mark */}
+                  <div style={{
+                    position: 'absolute',
+                    top: '20px',
+                    right: '20px',
+                    fontSize: '64px',
+                    fontFamily: 'serif',
+                    lineHeight: 1,
+                    color: 'rgba(232,0,13,0.08)',
+                    pointerEvents: 'none',
+                    userSelect: 'none'
+                  }}>
+                    &ldquo;
+                  </div>
+
+                  <div>
+                    {/* Rating stars */}
+                    <div style={{ display: 'flex', gap: '4px', marginBottom: '16px', color: '#f59e0b', fontSize: '18px' }}>
+                      {"★".repeat(rev.rating || 5)}
+                    </div>
+
+                    <p style={{
+                      fontSize: '18px',
+                      color: 'rgba(0,0,0,0.7)',
+                      lineHeight: 1.7,
+                      fontStyle: 'italic',
+                      marginBottom: '24px',
+                      position: 'relative',
+                      zIndex: 1,
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden'
+                    }}>
+                      "{rev.text || rev.content}"
+                    </p>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', borderTop: '1px solid #e5e7eb', paddingTop: '16px' }}>
+                    <div style={{
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: '50%',
+                      background: 'var(--red)',
+                      color: '#fff',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontWeight: 900,
+                      fontSize: '14px',
+                      flexShrink: 0
+                    }}>
+                      {rev.name?.[0] || 'C'}
+                    </div>
+                    <div>
+                      <h4 style={{ fontSize: '14px', fontWeight: 800, color: '#111827', margin: '0 0 2px' }}>
+                        {rev.name}
+                      </h4>
+                      {(rev.company || rev.role) && (
+                        <span style={{ fontSize: '12px', color: '#6b7280', fontWeight: 600 }}>
+                          {rev.role ? `${rev.role}, ` : ''}{rev.company || ''}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Right Arrow */}
+          <button
+            onClick={handleNext}
+            disabled={startIndex >= reviews.length - itemsPerPage}
+            style={{
+              flexShrink: 0,
+              width: '48px',
+              height: '48px',
+              borderRadius: '50%',
+              border: '2px solid var(--red)',
+              background: startIndex >= reviews.length - itemsPerPage ? 'rgba(232,0,13,0.08)' : 'var(--red)',
+              color: '#fff',
+              fontSize: '20px',
+              fontWeight: 'bold',
+              cursor: startIndex >= reviews.length - itemsPerPage ? 'default' : 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.2s',
+              opacity: startIndex >= reviews.length - itemsPerPage ? 0.35 : 1,
+              boxShadow: startIndex >= reviews.length - itemsPerPage ? 'none' : '0 4px 12px rgba(232,0,13,0.25)'
+            }}
+          >
+            &rarr;
+          </button>
+
+        </div>
+
+        {/* Write a Review button below carousel */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '40px' }}>
+          <button
+            onClick={() => setShowModal(true)}
+            className="btn-red"
+            style={{
+              padding: '12px 28px',
+              fontSize: '14px',
+              borderRadius: '8px',
+              fontWeight: 700,
               cursor: 'pointer',
-              boxShadow: '0 4px 12px rgba(232,0,13,0.15)',
-              marginTop: '8px'
+              boxShadow: '0 4px 12px rgba(232,0,13,0.2)'
             }}
           >
             Write a Review
           </button>
-
-          {/* Navigation Arrows positioned on the right */}
-          {reviews.length > itemsPerPage && (
-            <div style={{ 
-              position: itemsPerPage === 1 ? 'static' : 'absolute', 
-              right: 0, 
-              bottom: 0, 
-              display: 'flex', 
-              gap: '10px',
-              marginTop: itemsPerPage === 1 ? '20px' : 0
-            }}>
-              <button 
-                onClick={handlePrev} 
-                disabled={startIndex === 0} 
-                style={{ 
-                  width: '44px', 
-                  height: '44px', 
-                  borderRadius: '50%', 
-                  border: '1.5px solid #e5e7eb', 
-                  background: '#fff', 
-                  color: '#111827', 
-                  fontSize: '18px', 
-                  fontWeight: 'bold', 
-                  cursor: 'pointer', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center', 
-                  transition: 'all 0.2s', 
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-                  opacity: startIndex === 0 ? 0.3 : 1,
-                  pointerEvents: startIndex === 0 ? 'none' : 'auto'
-                }}
-                onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--red)'}
-                onMouseLeave={e => e.currentTarget.style.borderColor = '#e5e7eb'}
-              >
-                &larr;
-              </button>
-              <button 
-                onClick={handleNext} 
-                disabled={startIndex >= reviews.length - itemsPerPage} 
-                style={{ 
-                  width: '44px', 
-                  height: '44px', 
-                  borderRadius: '50%', 
-                  border: '1.5px solid #e5e7eb', 
-                  background: '#fff', 
-                  color: '#111827', 
-                  fontSize: '18px', 
-                  fontWeight: 'bold', 
-                  cursor: 'pointer', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center', 
-                  transition: 'all 0.2s', 
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-                  opacity: startIndex >= reviews.length - itemsPerPage ? 0.3 : 1,
-                  pointerEvents: startIndex >= reviews.length - itemsPerPage ? 'none' : 'auto'
-                }}
-                onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--red)'}
-                onMouseLeave={e => e.currentTarget.style.borderColor = '#e5e7eb'}
-              >
-                &rarr;
-              </button>
-            </div>
-          )}
         </div>
 
-        {/* Carousel Container */}
-        <div style={{ position: 'relative', width: '100%' }}>
-
-          {/* Sliding Carousel Viewport */}
-          <div style={{ overflow: 'hidden', margin: '0 -12px', padding: '12px 12px 24px 12px' }}>
-            <div style={{
-            display: 'flex',
-            gap: '24px',
-            transition: 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
-            transform: `translateX(calc(-${startIndex} * (100% + 24px) / ${itemsPerPage}))`
-          }}>
-            {reviews.map((rev, i) => (
-              <div
-                key={rev.id || i}
-                style={{
-                  flex: `0 0 calc((100% - ${(itemsPerPage - 1) * 24}px) / ${itemsPerPage})`,
-                  background: '#ffffff',
-                  padding: '32px',
-                  borderRadius: '16px',
-                  border: '1.5px solid #e5e7eb',
-                  boxShadow: '0 4px 20px rgba(0,0,0,0.02)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  position: 'relative',
-                  transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-                  cursor: 'pointer',
-                  boxSizing: 'border-box'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-6px)'
-                  e.currentTarget.style.borderColor = 'rgba(232,0,13,0.3)'
-                  e.currentTarget.style.boxShadow = '0 12px 30px rgba(232,0,13,0.06)'
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = ''
-                  e.currentTarget.style.borderColor = '#e5e7eb'
-                  e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.02)'
-                }}
-              >
-                {/* Quote Mark */}
-                <div style={{
-                  position: 'absolute',
-                  top: '20px',
-                  right: '20px',
-                  fontSize: '64px',
-                  fontFamily: 'serif',
-                  lineHeight: 1,
-                  color: 'rgba(232,0,13,0.08)',
-                  pointerEvents: 'none',
-                  userSelect: 'none'
-                }}>
-                  &ldquo;
-                </div>
-
-                <div>
-                  {/* Rating stars */}
-                  <div style={{ display: 'flex', gap: '4px', marginBottom: '16px', color: '#f59e0b', fontSize: '18px' }}>
-                    {"★".repeat(rev.rating || 5)}
-                  </div>
-                  
-                  <p style={{
-                    fontSize: '15px',
-                    color: '#4b5563',
-                    lineHeight: 1.6,
-                    fontStyle: 'italic',
-                    marginBottom: '24px',
-                    position: 'relative',
-                    zIndex: 1
-                  }}>
-                    "{rev.text || rev.content}"
-                  </p>
-                </div>
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', borderTop: '1px solid #e5e7eb', paddingTop: '16px' }}>
-                  <div style={{
-                    width: '40px',
-                    height: '40px',
-                    borderRadius: '50%',
-                    background: 'var(--red)',
-                    color: '#fff',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: 900,
-                    fontSize: '14px',
-                    flexShrink: 0
-                  }}>
-                    {rev.name?.[0] || 'C'}
-                  </div>
-                  <div>
-                    <h4 style={{ fontSize: '14px', fontWeight: 800, color: '#111827', margin: '0 0 2px' }}>
-                      {rev.name}
-                    </h4>
-                    {(rev.company || rev.role) && (
-                      <span style={{ fontSize: '12px', color: '#6b7280', fontWeight: 600 }}>
-                        {rev.role ? `${rev.role}, ` : ''}{rev.company || ''}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-        </div>
       </div>
 
       {/* Write a Review Modal */}

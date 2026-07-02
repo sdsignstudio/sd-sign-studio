@@ -1,16 +1,72 @@
-# React + Vite
+# SD Sign Studio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + Vite website for SD Sign Studio.
 
-Currently, two official plugins are available:
+## Development
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Install dependencies:
 
-## React Compiler
+```bash
+npm install
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Start the local dev server:
 
-## Expanding the ESLint configuration
+```bash
+npm run dev
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Build for production:
+
+```bash
+npm run build
+```
+
+## Database Setup
+
+The project uses Supabase/Postgres. Keep `DATABASE_URL` in `.env`; do not commit `.env`.
+
+Run these setup scripts when needed:
+
+```bash
+npm run db:gallery
+npm run db:pricing
+```
+
+`db:gallery` creates the gallery table used by the admin gallery page.
+
+`db:pricing` adds `price_inr` and `price_gbp` to products and backfills existing products from the old `price` column.
+
+## Gallery Media
+
+Large gallery videos and images are intentionally not committed to Git.
+
+The local approved media folder was about 1.85 GB, and some videos were over GitHub's 100 MB file limit, so pushing those files directly to `main` would fail. The repository commits only the gallery code, folder placeholders, and instructions.
+
+Local media folders:
+
+```text
+public/gallery-media/images/
+public/gallery-media/videos/
+```
+
+After adding local media files, regenerate the manifest:
+
+```bash
+npm run gallery:manifest
+```
+
+For production, upload gallery media to proper storage such as Supabase Storage or Cloudinary instead of committing raw videos to Git.
+
+## Admin Pages
+
+Important admin routes include:
+
+```text
+/admin/gallery
+/admin/gallery-banner
+/admin/gallery-categories
+/admin/products
+```
+
+Product pricing is managed with separate INR and GBP fields in the admin product form.

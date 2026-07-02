@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 import { Icon } from './icon'
+import { formatCurrency, getProductPrice } from '../../context/CountryContext'
 
 const card = { background: '#fff', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.03)' }
 
@@ -53,7 +54,7 @@ export default function DashboardHome() {
 
       const { data } = await supabase
         .from('products')
-        .select('id, name, category, price, primary_image, created_at')
+        .select('id, name, category, price, price_inr, price_gbp, primary_image, created_at')
         .order('created_at', { ascending: false })
         .limit(6)
       setRecentProducts(data || [])
@@ -196,7 +197,10 @@ export default function DashboardHome() {
                     </div>
                   </td>
                   <td style={{ padding: '13px 20px', fontSize: '13px', color: '#6b7280' }}>{p.category}</td>
-                  <td style={{ padding: '13px 20px', fontSize: '14px', fontWeight: 700, color: '#111827' }}>£{Number(p.price).toFixed(2)}</td>
+                  <td style={{ padding: '13px 20px', fontSize: '14px', fontWeight: 700, color: '#111827' }}>
+                    <div>{formatCurrency(getProductPrice(p, 'IN'), 'IN')}</div>
+                    <div style={{ marginTop: '2px', color: '#6b7280', fontSize: '12px' }}>{formatCurrency(getProductPrice(p, 'GB'), 'GB')}</div>
+                  </td>
                   <td style={{ padding: '13px 20px', textAlign: 'right' }}>
                     <Link to={`/admin/products/edit/${p.id}`} style={{ fontSize: '12px', fontWeight: 700, color: '#3b82f6', textDecoration: 'none', padding: '6px 12px', background: '#eff6ff', borderRadius: '6px' }}>
                       Edit

@@ -13,7 +13,7 @@ const CLOUD_NAME = 'dagbxhqod'
 const UPLOAD_PRESET = 'sd_sign_preset'
 
 const EMPTY_FORM = {
-  name: '', category: '', price: '', badge: '',
+  name: '', category: '', price: '', price_inr: '', price_gbp: '', badge: '',
   short_description: '', full_description: '',
   material: '', finish_options: '', durability: '',
   installation_info: '', warranty: '', lead_time: '', custom_design: '',
@@ -61,6 +61,8 @@ export default function ProductForm() {
         name: data.name || '',
         category: data.category || '',
         price: data.price?.toString() || '',
+        price_inr: data.price_inr?.toString() || data.price?.toString() || '',
+        price_gbp: data.price_gbp?.toString() || data.price?.toString() || '',
         badge: data.badge || '',
         short_description: data.short_description || '',
         full_description: data.full_description || '',
@@ -127,10 +129,18 @@ export default function ProductForm() {
 
       toast.loading('Saving to database...', { id: toastId })
 
+      const priceInr = parseFloat(form.price_inr)
+      const priceGbp = parseFloat(form.price_gbp)
+      if (!Number.isFinite(priceInr) || !Number.isFinite(priceGbp)) {
+        throw new Error('Please enter valid India and UK prices.')
+      }
+
       const payload = {
         name: form.name,
         category: form.category,
-        price: parseFloat(form.price),
+        price: priceGbp,
+        price_inr: priceInr,
+        price_gbp: priceGbp,
         badge: form.badge || null,
         short_description: form.short_description,
         full_description: form.full_description,
@@ -218,13 +228,19 @@ export default function ProductForm() {
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                   <div>
-                    <label style={labelStyle}>Starting Price (£) *</label>
-                    <input type="number" step="0.01" name="price" required value={form.price} onChange={handleChange} style={inputStyle} placeholder="0.00" min="0" />
+                    <label style={labelStyle}>Starting Price (INR) *</label>
+                    <input type="number" step="0.01" name="price_inr" required value={form.price_inr} onChange={handleChange} style={inputStyle} placeholder="0.00" min="0" />
+                    <p style={hint}>Shown when India pricing is selected.</p>
                   </div>
                   <div>
-                    <label style={labelStyle}>Badge <span style={{ fontWeight: 400, color: '#9ca3af' }}>(optional)</span></label>
-                    <input type="text" name="badge" value={form.badge} onChange={handleChange} style={inputStyle} placeholder="Popular, New, Sale…" />
+                    <label style={labelStyle}>Starting Price (GBP) *</label>
+                    <input type="number" step="0.01" name="price_gbp" required value={form.price_gbp} onChange={handleChange} style={inputStyle} placeholder="0.00" min="0" />
+                    <p style={hint}>Shown when UK pricing is selected.</p>
                   </div>
+                </div>
+                <div>
+                    <label style={labelStyle}>Badge <span style={{ fontWeight: 400, color: '#9ca3af' }}>(optional)</span></label>
+                    <input type="text" name="badge" value={form.badge} onChange={handleChange} style={inputStyle} placeholder="Popular, New, Sale..." />
                 </div>
                 <div>
                   <label style={labelStyle}>Short Description</label>

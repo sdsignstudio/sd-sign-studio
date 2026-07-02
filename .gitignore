@@ -17,6 +17,13 @@ dist
 dist-ssr
 *.local
 
+# Local gallery media can be very large. Keep media files on storage/CDN,
+# and commit only placeholders plus the gallery setup code.
+public/gallery-media/images/*
+!public/gallery-media/images/.gitkeep
+public/gallery-media/videos/*
+!public/gallery-media/videos/.gitkeep
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

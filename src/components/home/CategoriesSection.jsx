@@ -48,6 +48,7 @@ const STATIC_CATEGORIES = Object.keys(BRAND_ICONS).map(name => ({ name, icon: BR
 
 export default function CategoriesSection() {
   const [categories, setCategories] = useState(STATIC_CATEGORIES)
+  const parentCategories = categories.filter(cat => !cat.parent_id)
 
   useEffect(() => {
     async function fetchCategories() {
@@ -60,6 +61,7 @@ export default function CategoriesSection() {
           setCategories(data.map(c => ({
             ...c,
             icon: c.icon_url || BRAND_ICONS[c.name] || null,
+            hasImage: Boolean(c.icon_url),
           })))
         }
       } catch {
@@ -77,11 +79,15 @@ export default function CategoriesSection() {
           <h2 className="section-title">Popular <span className="red">Categories</span></h2>
         </div>
         <div className="cat-grid">
-          {categories.map((cat) => (
+          {parentCategories.map((cat) => (
             <div className="cat-card" key={cat.id || cat.name}>
               <div className="cat-logo-circle">
                 {typeof cat.icon === 'string' ? (
-                  <img src={cat.icon} alt={cat.name} />
+                  <img
+                    className={cat.hasImage ? 'cat-photo' : 'cat-icon'}
+                    src={cat.icon}
+                    alt={cat.name}
+                  />
                 ) : cat.icon ? (
                   cat.icon
                 ) : (

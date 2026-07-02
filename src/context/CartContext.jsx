@@ -19,7 +19,7 @@ export function CartProvider({ children }) {
       if (existing) {
         toast.success(`Increased quantity for ${product.name}`)
         return prev.map(item => 
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+          item.id === product.id ? { ...item, ...product, quantity: item.quantity + 1 } : item
         )
       }
       toast.success(`${product.name} added to cart!`)

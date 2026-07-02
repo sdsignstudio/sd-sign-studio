@@ -34,6 +34,8 @@ const NAV_GROUPS = [
     label: 'Content',
     items: [
       { name: 'Hero Banner', path: '/admin/hero', icon: 'seo' },
+      { name: 'Gallery Banner', path: '/admin/gallery-banner', icon: 'photo' },
+      { name: 'Gallery Categories', path: '/admin/gallery-categories', icon: 'categories' },
       { name: 'Why Us Section', path: '/admin/why-us', icon: 'about' },
       { name: 'Gallery', path: '/admin/gallery', icon: 'categories' },
       { name: 'Services', path: '/admin/services', icon: 'services' },
@@ -57,6 +59,8 @@ const NAV_GROUPS = [
 const PAGE_TITLES = {
   '/admin': 'Dashboard',
   '/admin/hero': 'Hero Banner',
+  '/admin/gallery-banner': 'Gallery Banner',
+  '/admin/gallery-categories': 'Gallery Categories',
   '/admin/why-us': 'Why Us Section',
   '/admin/gallery': 'Manage Gallery',
   '/admin/products': 'Products',

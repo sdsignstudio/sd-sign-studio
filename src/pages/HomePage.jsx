@@ -5,6 +5,7 @@ import AboutSection from '../components/home/AboutSection'
 import FeaturedWork from '../components/home/FeaturedWork'
 import ServicesSection from '../components/home/ServicesSection'
 import ProcessSection from '../components/home/ProcessSection'
+import GalleryPreview from '../components/home/GalleryPreview'
 import CtaBand from '../components/home/CtaBand'
 import WhyChooseUs from '../components/home/WhyChooseUs'
 import TestimonialsSection from '../components/home/TestimonialsSection'
@@ -26,6 +27,7 @@ export default function HomePage() {
       <AboutSection />
       <CategoriesSection />
       <FeaturedWork />
+      <GalleryPreview />
       <WhyChooseUs />
       <ProcessSection />
       <TestimonialsSection />

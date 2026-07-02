@@ -21,6 +21,7 @@ import DashboardHome from './pages/admin/DashboardHome'
 import ManageProducts from './pages/admin/ManageProducts'
 import ProductForm from './pages/admin/ProductForm'
 import ManageCategories from './pages/admin/ManageCategories'
+import ManageGalleryCategories from './pages/admin/ManageGalleryCategories'
 import ManageServices from './pages/admin/ManageServices'
 import ManageCustomers from './pages/admin/ManageCustomers'
 import ManageInquiries from './pages/admin/ManageInquiries'
@@ -28,6 +29,7 @@ import ManageTestimonials from './pages/admin/ManageTestimonials'
 import ManageSEO from './pages/admin/ManageSEO'
 import Analytics from './pages/admin/Analytics'
 import ManageHero from './pages/admin/ManageHero'
+import ManageGalleryBanner from './pages/admin/ManageGalleryBanner'
 import ManageGallery from './pages/admin/ManageGallery'
 import ManageWhyUs from './pages/admin/ManageWhyUs'
 
@@ -76,6 +78,8 @@ export default function App() {
           <Route path="inquiries" element={<ManageInquiries />} />
           {/* Content */}
           <Route path="hero" element={<ManageHero />} />
+          <Route path="gallery-banner" element={<ManageGalleryBanner />} />
+          <Route path="gallery-categories" element={<ManageGalleryCategories />} />
           <Route path="why-us" element={<ManageWhyUs />} />
           <Route path="gallery" element={<ManageGallery />} />
           <Route path="services" element={<ManageServices />} />

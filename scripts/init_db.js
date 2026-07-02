@@ -35,6 +35,8 @@ async function initDB() {
         short_description TEXT,
         full_description TEXT,
         price DECIMAL(10, 2) NOT NULL,
+        price_inr DECIMAL(12, 2),
+        price_gbp DECIMAL(10, 2),
         badge VARCHAR(50),
         primary_image VARCHAR(1000) NOT NULL,
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP

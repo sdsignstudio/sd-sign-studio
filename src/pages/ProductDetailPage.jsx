@@ -3,12 +3,14 @@ import { useParams, Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { products as dummyProducts } from '../data/products'
 import { useCart } from '../context/CartContext'
+import { formatProductPrice, useCountry } from '../context/CountryContext'
 
 const TABS = ['Overview', 'Specifications', 'Why Choose Us']
 
 export default function ProductDetailPage() {
   const { id } = useParams()
   const { addToCart } = useCart()
+  const { country } = useCountry()
 
   const [product, setProduct] = useState(null)
   const [gallery, setGallery] = useState([])
@@ -78,7 +80,7 @@ export default function ProductDetailPage() {
 
   const allSpecs = [
     { label: 'Category',       value: product.category },
-    { label: 'Starting Price', value: `£${Number(product.price).toLocaleString()}` },
+    { label: 'Starting Price', value: formatProductPrice(product, country.code) },
     { label: 'Product Type',   value: product.badge },
     { label: 'Material',       value: product.material },
     { label: 'Finish Options', value: product.finish_options },
@@ -164,7 +166,7 @@ export default function ProductDetailPage() {
 
           <div style={{ fontSize: '38px', fontWeight: 900, color: '#111', marginBottom: '20px', display: 'flex', alignItems: 'baseline', gap: '8px' }}>
             <span style={{ fontSize: '15px', fontWeight: 600, color: '#9ca3af' }}>From</span>
-            £{Number(product.price).toLocaleString()}
+            {formatProductPrice(product, country.code)}
           </div>
 
           <p style={{ fontSize: '18px', color: 'rgba(0,0,0,0.7)', lineHeight: 1.7, marginBottom: '32px', paddingBottom: '32px', borderBottom: '1px solid #f3f4f6' }}>
@@ -371,7 +373,7 @@ export default function ProductDetailPage() {
                   <p className="product-desc" style={{ flexGrow: 1 }}>{rp.shortDescription || rp.short_description}</p>
                   <div className="product-price-row">
                     <div className="product-price">
-                      <span className="from">From </span>£{Number(rp.price).toLocaleString()}
+                      <span className="from">From </span>{formatProductPrice(rp, country.code)}
                     </div>
                     <span className="product-cta">View</span>
                   </div>

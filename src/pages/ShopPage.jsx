@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { products as dummyProducts } from '../data/products'
 import { BRAND_ICONS } from '../components/home/CategoriesSection'
+import { formatProductPrice, getProductPrice, useCountry } from '../context/CountryContext'
 
 const sortOptions = [
   { value: 'default', label: 'Recommended' },
@@ -12,6 +13,7 @@ const sortOptions = [
 ]
 
 export default function ShopPage() {
+  const { country } = useCountry()
   const [activeCategories, setActiveCategories] = useState([])
   const [sortBy, setSortBy] = useState('default')
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -76,13 +78,13 @@ export default function ShopPage() {
     }
 
     switch (sortBy) {
-      case 'price-asc': items.sort((a, b) => a.price - b.price); break
-      case 'price-desc': items.sort((a, b) => b.price - a.price); break
+      case 'price-asc': items.sort((a, b) => getProductPrice(a, country.code) - getProductPrice(b, country.code)); break
+      case 'price-desc': items.sort((a, b) => getProductPrice(b, country.code) - getProductPrice(a, country.code)); break
       case 'name-asc': items.sort((a, b) => a.name.localeCompare(b.name)); break
       default: break
     }
     return items
-  }, [activeCategories, searchQuery, sortBy, products])
+  }, [activeCategories, searchQuery, sortBy, products, country.code])
 
   const toggleCategory = (catName) => {
     setActiveCategories(prev =>
@@ -288,7 +290,7 @@ export default function ShopPage() {
                   <p className="product-desc" style={{ flexGrow: 1 }}>{product.shortDescription}</p>
                   <div className="product-price-row">
                     <div className="product-price">
-                      <span className="from">From </span>£{product.price.toLocaleString()}
+                      <span className="from">From </span>{formatProductPrice(product, country.code)}
                     </div>
                     <span className="product-cta">View</span>
                   </div>

@@ -104,13 +104,13 @@ export default function HeroSection() {
     return (
       <section id="hero" style={{ background: '#ffffff', display: 'flex', flexDirection: 'column', paddingTop: 'var(--nav-h)' }}>
 
-        {/* Media card — padded with rounded corners like EV Nation */}
-        <div style={{ padding: '16px 16px 0' }}>
+        {/* Full-width mobile media */}
+        <div style={{ padding: 0 }}>
           <div
             style={{
               position: 'relative',
               width: '100%',
-              borderRadius: '20px',
+              borderRadius: 0,
               overflow: 'hidden',
               height: '54vw',
               minHeight: '200px',

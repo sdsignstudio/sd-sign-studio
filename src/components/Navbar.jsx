@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
+import { useCountry } from '../context/CountryContext'
 import { supabase } from '../lib/supabase'
 import toast from 'react-hot-toast'
 
@@ -11,6 +12,7 @@ export default function Navbar() {
   const navigate = useNavigate()
   const { user, isAdmin } = useAuth()
   const { cartCount } = useCart()
+  const { country, countries, setCountryCode } = useCountry()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -85,6 +87,24 @@ export default function Navbar() {
           </div>
           
           <div className="nav-icons" style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <label className="country-select-wrap" aria-label="Country">
+              <span className="country-select-current">
+                <span className={`country-flag-icon country-flag-${country.code.toLowerCase()}`} aria-hidden="true">
+                  {country.code === 'IN' && <span className="flag-wheel" />}
+                </span>
+                <span className="sr-only">{country.label}</span>
+              </span>
+              <select
+                value={country.code}
+                onChange={e => setCountryCode(e.target.value)}
+                aria-label="Select pricing country"
+              >
+                {countries.map(item => (
+                  <option key={item.code} value={item.code}>{item.label}</option>
+                ))}
+              </select>
+            </label>
+
             <Link to="/cart" style={{ color: 'var(--black)', display: 'flex', alignItems: 'center', position: 'relative' }} aria-label="Shopping Bag">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
@@ -129,6 +149,23 @@ export default function Navbar() {
             {item.label}
           </Link>
         ))}
+        <label className="mobile-country-select" aria-label="Country">
+          <span className="mobile-country-label">
+            <span className={`country-flag-icon country-flag-${country.code.toLowerCase()}`} aria-hidden="true">
+              {country.code === 'IN' && <span className="flag-wheel" />}
+            </span>
+            Pricing country
+          </span>
+          <select
+            value={country.code}
+            onChange={e => setCountryCode(e.target.value)}
+            aria-label="Select pricing country"
+          >
+            {countries.map(item => (
+              <option key={item.code} value={item.code}>{item.label}</option>
+            ))}
+          </select>
+        </label>
         {user ? (
           <>
             {isAdmin && <Link to="/admin" onClick={() => setMenuOpen(false)}>Dashboard</Link>}

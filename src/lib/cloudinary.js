@@ -5,7 +5,7 @@ export async function uploadToCloudinary(file) {
   const fd = new FormData()
   fd.append('file', file)
   fd.append('upload_preset', PRESET)
-  const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`, {
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/auto/upload`, {
     method: 'POST',
     body: fd,
   })

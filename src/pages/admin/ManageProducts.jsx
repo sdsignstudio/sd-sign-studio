@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import toast from 'react-hot-toast'
 import { Icon } from './icon'
+import { formatCurrency, getProductPrice } from '../../context/CountryContext'
 
 const card = { background: '#fff', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.03)' }
 
@@ -163,7 +164,10 @@ export default function ManageProducts() {
                       </span>
                     </td>
                     <td style={{ padding: '12px 20px', fontSize: '15px', fontWeight: 800, color: '#111827', whiteSpace: 'nowrap' }}>
-                      £{Number(product.price || 0).toFixed(2)}
+                      <div>{formatCurrency(getProductPrice(product, 'IN'), 'IN')}</div>
+                      <div style={{ marginTop: '2px', color: '#6b7280', fontSize: '12px', fontWeight: 700 }}>
+                        {formatCurrency(getProductPrice(product, 'GB'), 'GB')}
+                      </div>
                     </td>
                     <td style={{ padding: '12px 20px' }}>
                       {product.badge ? (

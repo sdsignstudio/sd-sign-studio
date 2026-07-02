@@ -1,9 +1,12 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
+import { formatCurrency, getProductPrice, useCountry } from '../context/CountryContext'
 
 export default function CartPage() {
-  const { cartItems, updateQuantity, removeFromCart, cartTotal } = useCart()
+  const { cartItems, updateQuantity, removeFromCart } = useCart()
+  const { country } = useCountry()
+  const cartTotal = cartItems.reduce((total, item) => total + (getProductPrice(item, country.code) * item.quantity), 0)
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -15,10 +18,11 @@ export default function CartPage() {
     let text = `Hi SD Sign Studio, I'd like to book the following items from my cart:\n\n`
     
     cartItems.forEach(item => {
-      text += `- ${item.name} x${item.quantity} (£${(item.price * item.quantity).toLocaleString()})\n`
+      const lineTotal = getProductPrice(item, country.code) * item.quantity
+      text += `- ${item.name} x${item.quantity} (${formatCurrency(lineTotal, country.code)})\n`
     })
 
-    text += `\n*Total Estimate: £${cartTotal.toLocaleString()}*\n\nPlease let me know the next steps to confirm my booking.`
+    text += `\n*Total Estimate: ${formatCurrency(cartTotal, country.code)}*\n\nPlease let me know the next steps to confirm my booking.`
 
     const whatsappUrl = `https://wa.me/919676112750?text=${encodeURIComponent(text)}`
     window.open(whatsappUrl, '_blank')
@@ -46,7 +50,7 @@ export default function CartPage() {
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
                       <h3 style={{ fontSize: '18px', fontWeight: 700, color: 'var(--black)', margin: 0 }}>{item.name}</h3>
-                      <div style={{ fontSize: '18px', fontWeight: 700 }}>£{(item.price * item.quantity).toLocaleString()}</div>
+                      <div style={{ fontSize: '18px', fontWeight: 700 }}>{formatCurrency(getProductPrice(item, country.code) * item.quantity, country.code)}</div>
                     </div>
                     <p style={{ fontSize: '14px', color: 'rgba(0,0,0,0.5)', margin: '0 0 16px 0' }}>{item.category}</p>
                     
@@ -69,7 +73,7 @@ export default function CartPage() {
               
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', fontSize: '15px' }}>
                 <span style={{ color: 'rgba(0,0,0,0.6)' }}>Subtotal</span>
-                <span style={{ fontWeight: 600 }}>£{cartTotal.toLocaleString()}</span>
+                <span style={{ fontWeight: 600 }}>{formatCurrency(cartTotal, country.code)}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '24px', fontSize: '15px', paddingBottom: '24px', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
                 <span style={{ color: 'rgba(0,0,0,0.6)' }}>Tax</span>
@@ -78,7 +82,7 @@ export default function CartPage() {
 
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '32px', fontSize: '18px' }}>
                 <span style={{ fontWeight: 800, color: 'var(--black)' }}>Total</span>
-                <span style={{ fontWeight: 800, color: 'var(--black)' }}>£{cartTotal.toLocaleString()}</span>
+                <span style={{ fontWeight: 800, color: 'var(--black)' }}>{formatCurrency(cartTotal, country.code)}</span>
               </div>
 
               <button 

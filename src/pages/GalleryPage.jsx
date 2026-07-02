@@ -1,36 +1,90 @@
-import { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react'
+import { useLocation } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import CtaBand from '../components/home/CtaBand'
+import GalleryHeroBanner from '../components/gallery/GalleryHeroBanner'
+import { ALL_LOCAL_GALLERY_MEDIA } from '../data/galleryMedia'
+import { getGalleryCategories } from '../data/galleryCategoriesService'
+import { GALLERY_CATEGORY_ICONS } from '../data/galleryCategoryIcons'
+
+const getMediaUrl = (item) => item.src || item.image || item.media_url
+const getMediaType = (item) => {
+  if (item.mediaType || item.media_type) return item.mediaType || item.media_type
+  const url = getMediaUrl(item) || ''
+  return /\.(mp4|webm|ogg|mov)$/i.test(url) ? 'video' : 'image'
+}
+
+function GalleryVideoTile({ item }) {
+  const videoRef = useRef(null)
+  const [canLoad, setCanLoad] = useState(false)
+  const [isVisible, setIsVisible] = useState(false)
+
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+
+    const observer = new IntersectionObserver(([entry]) => {
+      const visible = entry.isIntersecting && entry.intersectionRatio >= 0.35
+      setIsVisible(visible)
+      if (visible) setCanLoad(true)
+    }, { threshold: [0, 0.35, 0.7] })
+
+    observer.observe(video)
+    return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+
+    if (canLoad && isVisible) {
+      video.play().catch(() => {})
+    } else {
+      video.pause()
+    }
+  }, [canLoad, isVisible])
+
+  return (
+    <video
+      ref={videoRef}
+      className="gallery-grid-video"
+      src={canLoad ? getMediaUrl(item) : undefined}
+      muted
+      loop
+      playsInline
+      preload="none"
+      style={{
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover',
+        transition: 'transform 0.4s ease'
+      }}
+    />
+  )
+}
+
+const INITIAL_GALLERY_ITEMS = 12
+const GALLERY_PAGE_SIZE = 12
 
 export default function GalleryPage() {
   const location = useLocation()
   const initialCategory = new URLSearchParams(location.search).get('category') || 'all'
   const [activeTab, setActiveTab] = useState(initialCategory)
   const [selectedImage, setSelectedImage] = useState(null)
-  const [services, setServices] = useState([])
   const [galleryItems, setGalleryItems] = useState([])
+  const [galleryCategories, setGalleryCategories] = useState(() => getGalleryCategories())
   const [loading, setLoading] = useState(true)
+  const [visibleCount, setVisibleCount] = useState(INITIAL_GALLERY_ITEMS)
 
   useEffect(() => {
     window.scrollTo(0, 0)
     async function loadData() {
       try {
-        const [srvRes, galRes] = await Promise.all([
-          supabase.from('services').select('title'),
-          supabase.from('gallery').select('*')
-        ])
-        
-        if (srvRes.data) {
-          // Unique services titles
-          const titles = Array.from(new Set(srvRes.data.map(s => s.title)))
-          setServices(titles)
-        }
-        if (galRes.data) {
-          setGalleryItems(galRes.data)
-        }
+        const galRes = await supabase.from('gallery').select('*')
+        setGalleryItems(galRes.data || [])
       } catch (err) {
         console.error("Failed to load gallery:", err)
+        setGalleryItems([])
       } finally {
         setLoading(false)
       }
@@ -38,83 +92,78 @@ export default function GalleryPage() {
     loadData()
   }, [])
 
+  useEffect(() => {
+    const handleUpdate = () => setGalleryCategories(getGalleryCategories())
+    const handleStorage = (event) => {
+      if (event.key === 'gallery_categories') handleUpdate()
+    }
+    window.addEventListener('gallery-categories-updated', handleUpdate)
+    window.addEventListener('storage', handleStorage)
+    return () => {
+      window.removeEventListener('gallery-categories-updated', handleUpdate)
+      window.removeEventListener('storage', handleStorage)
+    }
+  }, [])
+
+  const categoryNames = galleryCategories.map(category => category.name)
+  const localGalleryItems = ALL_LOCAL_GALLERY_MEDIA.map((item, index) => {
+    const categoryName = categoryNames[index % categoryNames.length] || item.category
+    return { ...item, category: categoryName, title: categoryName }
+  })
+  const allGalleryItems = [...galleryItems, ...localGalleryItems]
+  const categoryCards = [
+    { id: 'all', name: 'All Work', value: 'all', icon: 'LayoutGrid', image: '' },
+    ...galleryCategories.map(category => ({ ...category, value: category.name })),
+  ]
+
   const filteredItems = activeTab === 'all'
-    ? galleryItems
-    : galleryItems.filter(item => item.category === activeTab)
+    ? allGalleryItems
+    : allGalleryItems.filter(item => item.category === activeTab)
+  const visibleItems = filteredItems.slice(0, visibleCount)
+
+  useEffect(() => {
+    setVisibleCount(INITIAL_GALLERY_ITEMS)
+  }, [activeTab])
 
   return (
     <>
       <div style={{ background: '#fff', minHeight: '100vh' }}>
-        {/* Banner */}
-        <div className="shop-banner">
-          <div className="shop-banner-inner">
-            <h1 style={{ fontFamily: 'serif', fontWeight: 600 }}>Our Gallery</h1>
-            <p>Explore some of our recent vehicle wraps, storefront installations, and print projects.</p>
-            <div className="shop-breadcrumb" style={{ justifyContent: 'center', marginTop: '16px', color: 'rgba(255,255,255,0.7)' }}>
-              <Link to="/" style={{ color: 'rgba(255,255,255,0.7)' }}>Home</Link>
-              <span className="sep" style={{ color: 'rgba(255,255,255,0.3)' }}>/</span>
-              <span style={{ color: '#fff' }}>Gallery</span>
+        <GalleryHeroBanner />
+
+        <section className="gallery-category-section">
+          <div className="gallery-category-inner">
+            <div className="gallery-category-grid">
+              {categoryCards.map(item => {
+                const Icon = GALLERY_CATEGORY_ICONS[item.icon] || GALLERY_CATEGORY_ICONS.LayoutGrid
+                const active = activeTab === item.value
+
+                return (
+                  <button
+                    key={item.value}
+                    type="button"
+                    className={`gallery-category-card${active ? ' active' : ''}`}
+                    onClick={() => setActiveTab(item.value)}
+                  >
+                    {item.image ? (
+                      <img className="gallery-category-image" src={item.image} alt="" />
+                    ) : (
+                      <Icon className="gallery-category-icon" strokeWidth={1.9} />
+                    )}
+                    <span>{item.name}</span>
+                  </button>
+                )
+              })}
             </div>
           </div>
-        </div>
-
-        {/* Filters */}
-        <div style={{ maxWidth: '1200px', margin: '48px auto 0', padding: '0 24px', display: 'flex', justifyContent: 'center', gap: '10px', flexWrap: 'wrap' }}>
-          <button
-            onClick={() => setActiveTab('all')}
-            style={{
-              padding: '10px 20px',
-              border: 'none',
-              borderRadius: '30px',
-              fontSize: '13px',
-              fontWeight: 700,
-              cursor: 'pointer',
-              transition: 'all 0.2s',
-              background: activeTab === 'all' ? 'var(--red)' : '#f3f4f6',
-              color: activeTab === 'all' ? '#fff' : '#374151',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-              border: '1.5px solid',
-              borderColor: activeTab === 'all' ? 'var(--red)' : '#e5e7eb'
-            }}
-          >
-            All Work
-          </button>
-          
-          {services.map(title => (
-            <button
-              key={title}
-              onClick={() => setActiveTab(title)}
-              style={{
-                padding: '10px 20px',
-                border: 'none',
-                borderRadius: '30px',
-                fontSize: '13px',
-                fontWeight: 700,
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                background: activeTab === title ? 'var(--red)' : '#f3f4f6',
-                color: activeTab === title ? '#fff' : '#374151',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                border: '1.5px solid',
-                borderColor: activeTab === title ? 'var(--red)' : '#e5e7eb'
-              }}
-            >
-              {title}
-            </button>
-          ))}
-        </div>
+        </section>
 
         {/* Gallery Grid */}
-        <div style={{ maxWidth: '1200px', margin: '40px auto 120px', padding: '0 24px' }}>
+        <div style={{ maxWidth: '1200px', margin: '36px auto 120px', padding: '0 24px' }}>
           {loading ? (
             <div style={{ textAlign: 'center', color: 'var(--text-light)', padding: '60px' }}>Loading gallery...</div>
           ) : (
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-              gap: '24px'
-            }}>
-              {filteredItems.map(item => (
+            <div className="gallery-media-grid">
+              {visibleItems.map(item => (
                 <div
                    key={item.id}
                    onClick={() => setSelectedImage(item)}
@@ -130,27 +179,48 @@ export default function GalleryPage() {
                    onMouseEnter={(e) => {
                      e.currentTarget.style.transform = 'translateY(-4px)'
                      e.currentTarget.style.boxShadow = '0 12px 24px rgba(0,0,0,0.08)'
-                     const img = e.currentTarget.querySelector('img')
-                     if (img) img.style.transform = 'scale(1.04)'
+                     const media = e.currentTarget.querySelector('img, .gallery-grid-video')
+                     if (media) media.style.transform = 'scale(1.04)'
                    }}
                    onMouseLeave={(e) => {
                      e.currentTarget.style.transform = ''
                      e.currentTarget.style.boxShadow = ''
-                     const img = e.currentTarget.querySelector('img')
-                     if (img) img.style.transform = ''
+                     const media = e.currentTarget.querySelector('img, .gallery-grid-video')
+                     if (media) media.style.transform = ''
                    }}
                 >
                   <div style={{ overflow: 'hidden', position: 'relative', aspectRatio: '4/3' }}>
-                    <img
-                      src={item.image}
-                      alt={item.title}
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        transition: 'transform 0.4s ease'
-                      }}
-                    />
+                    {getMediaType(item) === 'video' ? (
+                      <GalleryVideoTile item={item} />
+                    ) : (
+                      <img
+                        src={getMediaUrl(item)}
+                        alt={item.title}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          transition: 'transform 0.4s ease'
+                        }}
+                      />
+                    )}
+                    {getMediaType(item) === 'video' && (
+                      <div style={{
+                        position: 'absolute',
+                        top: '10px',
+                        right: '10px',
+                        background: 'rgba(0,0,0,0.68)',
+                        color: '#fff',
+                        borderRadius: '999px',
+                        padding: '5px 9px',
+                        fontSize: '10px',
+                        fontWeight: 900,
+                        letterSpacing: '1px',
+                        textTransform: 'uppercase'
+                      }}>
+                        Video
+                      </div>
+                    )}
                     <div style={{
                       position: 'absolute',
                       inset: 0,
@@ -160,14 +230,6 @@ export default function GalleryPage() {
                     }} className="hover-overlay" />
                   </div>
                   
-                  <div style={{ padding: '16px' }}>
-                    <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--red)', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                      {item.category}
-                    </span>
-                    <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#111827', marginTop: '4px', marginBottom: '0' }}>
-                      {item.title}
-                    </h3>
-                  </div>
                 </div>
               ))}
               {filteredItems.length === 0 && (
@@ -175,6 +237,18 @@ export default function GalleryPage() {
                   No showcase items found for this category yet.
                 </div>
               )}
+            </div>
+          )}
+          {!loading && visibleCount < filteredItems.length && (
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '34px' }}>
+              <button
+                type="button"
+                className="btn-red"
+                onClick={() => setVisibleCount(prev => prev + GALLERY_PAGE_SIZE)}
+                style={{ border: 'none', cursor: 'pointer' }}
+              >
+                Load More
+              </button>
             </div>
           )}
         </div>
@@ -215,18 +289,21 @@ export default function GalleryPage() {
                 &times;
               </button>
               
-              <img
-                src={selectedImage.image}
-                alt={selectedImage.title}
-                style={{ width: '100%', maxHeight: '75vh', objectFit: 'contain', borderRadius: '8px', boxShadow: '0 10px 40px rgba(0,0,0,0.8)' }}
-              />
+              {getMediaType(selectedImage) === 'video' ? (
+                <video
+                  src={getMediaUrl(selectedImage)}
+                  controls
+                  autoPlay
+                  style={{ width: '100%', maxHeight: '75vh', objectFit: 'contain', borderRadius: '8px', boxShadow: '0 10px 40px rgba(0,0,0,0.8)' }}
+                />
+              ) : (
+                <img
+                  src={getMediaUrl(selectedImage)}
+                  alt={selectedImage.title}
+                  style={{ width: '100%', maxHeight: '75vh', objectFit: 'contain', borderRadius: '8px', boxShadow: '0 10px 40px rgba(0,0,0,0.8)' }}
+                />
+              )}
               
-              <div style={{ textAlign: 'center', color: '#fff' }}>
-                <span style={{ fontSize: '12px', color: 'var(--red)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px' }}>
-                  {selectedImage.category}
-                </span>
-                <h4 style={{ fontSize: '18px', fontWeight: 700, margin: '4px 0 0' }}>{selectedImage.title}</h4>
-              </div>
             </div>
           </div>
         )}

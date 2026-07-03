@@ -28,12 +28,34 @@ const categoryForIndex = (index) => {
   return categories[index % categories.length]
 }
 
-export const HOME_GALLERY_PREVIEW = GALLERY_VIDEOS.slice(0, 4).map((item, index) => ({
-  ...item,
+const fallbackPreviewItems = FALLBACK_POSTERS.map((src, index) => ({
+  src,
+  mediaType: 'image',
   category: categoryForIndex(index),
   title: categoryForIndex(index),
-  fallback: GALLERY_IMAGES[index % GALLERY_IMAGES.length]?.src || FALLBACK_POSTERS[index],
+  fallback: src,
 }))
+
+const generatedPreviewItems = [
+  ...GALLERY_VIDEOS.slice(0, 4).map((item, index) => ({
+    ...item,
+    mediaType: 'video',
+    category: categoryForIndex(index),
+    title: categoryForIndex(index),
+    fallback: GALLERY_IMAGES[index % GALLERY_IMAGES.length]?.src || FALLBACK_POSTERS[index],
+  })),
+  ...GALLERY_IMAGES.slice(0, 4).map((item, index) => ({
+    ...item,
+    mediaType: 'image',
+    category: categoryForIndex(index),
+    title: categoryForIndex(index),
+    fallback: item.src,
+  })),
+]
+
+export const HOME_GALLERY_PREVIEW = generatedPreviewItems.length > 0
+  ? generatedPreviewItems.slice(0, 4)
+  : fallbackPreviewItems
 
 export const ALL_LOCAL_GALLERY_MEDIA = [
   ...GALLERY_VIDEOS.map((item, index) => ({

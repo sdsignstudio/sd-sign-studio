@@ -3,7 +3,6 @@ import { useLocation } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import CtaBand from '../components/home/CtaBand'
 import GalleryHeroBanner from '../components/gallery/GalleryHeroBanner'
-import { ALL_LOCAL_GALLERY_MEDIA } from '../data/galleryMedia'
 import { getGalleryCategories } from '../data/galleryCategoriesService'
 import { GALLERY_CATEGORY_ICONS } from '../data/galleryCategoryIcons'
 
@@ -65,6 +64,7 @@ function GalleryVideoTile({ item }) {
 
 const INITIAL_GALLERY_ITEMS = 12
 const GALLERY_PAGE_SIZE = 12
+const COLLAPSED_CATEGORY_COUNT = 5
 
 export default function GalleryPage() {
   const location = useLocation()
@@ -75,6 +75,7 @@ export default function GalleryPage() {
   const [galleryCategories, setGalleryCategories] = useState(() => getGalleryCategories())
   const [loading, setLoading] = useState(true)
   const [visibleCount, setVisibleCount] = useState(INITIAL_GALLERY_ITEMS)
+  const [showAllCategories, setShowAllCategories] = useState(false)
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -105,20 +106,18 @@ export default function GalleryPage() {
     }
   }, [])
 
-  const categoryNames = galleryCategories.map(category => category.name)
-  const localGalleryItems = ALL_LOCAL_GALLERY_MEDIA.map((item, index) => {
-    const categoryName = categoryNames[index % categoryNames.length] || item.category
-    return { ...item, category: categoryName, title: categoryName }
-  })
-  const allGalleryItems = [...galleryItems, ...localGalleryItems]
   const categoryCards = [
     { id: 'all', name: 'All Work', value: 'all', icon: 'LayoutGrid', image: '' },
     ...galleryCategories.map(category => ({ ...category, value: category.name })),
   ]
+  const visibleCategoryCards = showAllCategories
+    ? categoryCards
+    : categoryCards.slice(0, COLLAPSED_CATEGORY_COUNT)
+  const hasHiddenCategories = categoryCards.length > COLLAPSED_CATEGORY_COUNT
 
   const filteredItems = activeTab === 'all'
-    ? allGalleryItems
-    : allGalleryItems.filter(item => item.category === activeTab)
+    ? galleryItems
+    : galleryItems.filter(item => item.category === activeTab)
   const visibleItems = filteredItems.slice(0, visibleCount)
 
   useEffect(() => {
@@ -132,8 +131,8 @@ export default function GalleryPage() {
 
         <section className="gallery-category-section">
           <div className="gallery-category-inner">
-            <div className="gallery-category-grid">
-              {categoryCards.map(item => {
+            <div className={`gallery-category-grid${showAllCategories ? '' : ' collapsed'}`}>
+              {visibleCategoryCards.map(item => {
                 const Icon = GALLERY_CATEGORY_ICONS[item.icon] || GALLERY_CATEGORY_ICONS.LayoutGrid
                 const active = activeTab === item.value
 
@@ -153,6 +152,26 @@ export default function GalleryPage() {
                   </button>
                 )
               })}
+              {!showAllCategories && hasHiddenCategories && (
+                <button
+                  type="button"
+                  className="gallery-category-card show-all"
+                  onClick={() => setShowAllCategories(true)}
+                >
+                  <span className="show-all-plus">+</span>
+                  <span>Show All</span>
+                </button>
+              )}
+              {showAllCategories && hasHiddenCategories && (
+                <button
+                  type="button"
+                  className="gallery-category-card show-all"
+                  onClick={() => setShowAllCategories(false)}
+                >
+                  <span className="show-all-plus">-</span>
+                  <span>Show Less</span>
+                </button>
+              )}
             </div>
           </div>
         </section>

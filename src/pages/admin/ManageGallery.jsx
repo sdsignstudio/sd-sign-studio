@@ -3,6 +3,7 @@ import toast from 'react-hot-toast'
 import { supabase } from '../../lib/supabase'
 import { uploadToCloudinary } from '../../lib/cloudinary'
 import { Icon } from './icon'
+import { getGalleryCategories } from '../../data/galleryCategoriesService'
 
 const card = { background: '#fff', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.03)', padding: '24px' }
 const inputStyle = { width: '100%', padding: '10px 14px', border: '1.5px solid #e5e7eb', borderRadius: '8px', fontSize: '14px', fontFamily: 'var(--font)', outline: 'none', background: '#fff', color: '#111' }
@@ -10,33 +11,36 @@ const labelStyle = { display: 'block', fontSize: '13px', fontWeight: 700, color:
 
 export default function ManageGallery() {
   const [items, setItems] = useState([])
-  const [services, setServices] = useState([])
+  const [categories, setCategories] = useState(() => getGalleryCategories().map(item => item.name))
   const [loading, setLoading] = useState(true)
   
   // Form state
   const [title, setTitle] = useState('')
   const [category, setCategory] = useState('')
-  const [image, setImage] = useState('')
+  const [mediaUrl, setMediaUrl] = useState('')
+  const [mediaType, setMediaType] = useState('image')
   const [uploading, setUploading] = useState(false)
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
     loadData()
+    const handleCategoriesUpdate = () => {
+      const nextCategories = getGalleryCategories().map(item => item.name)
+      setCategories(nextCategories)
+      setCategory(prev => prev || nextCategories[0] || '')
+    }
+    window.addEventListener('gallery-categories-updated', handleCategoriesUpdate)
+    return () => window.removeEventListener('gallery-categories-updated', handleCategoriesUpdate)
   }, [])
 
   async function loadData() {
     try {
-      const [galRes, srvRes] = await Promise.all([
-        supabase.from('gallery').select('*'),
-        supabase.from('services').select('title')
-      ])
+      const galRes = await supabase.from('gallery').select('*').order('created_at', { ascending: false })
       
       if (galRes.data) setItems(galRes.data)
-      if (srvRes.data) {
-        const titles = Array.from(new Set(srvRes.data.map(s => s.title)))
-        setServices(titles)
-        if (titles.length > 0) setCategory(titles[0])
-      }
+      const categoryNames = getGalleryCategories().map(item => item.name)
+      setCategories(categoryNames)
+      if (!category && categoryNames.length > 0) setCategory(categoryNames[0])
     } catch (err) {
       console.error(err)
       toast.error('Failed to load gallery data')
@@ -50,12 +54,21 @@ export default function ManageGallery() {
     if (!file) return
     
     setUploading(true)
-    toast.loading('Uploading image...', { id: 'gal-upload' })
+    toast.loading('Uploading media...', { id: 'gal-upload' })
     
     try {
-      const url = await uploadToCloudinary(file)
-      setImage(url)
-      toast.success('Image uploaded successfully!', { id: 'gal-upload' })
+      const upload = await uploadToCloudinary(file, {
+        folder: file.type.startsWith('video/')
+          ? 'sd-sign-studio/gallery/videos'
+          : 'sd-sign-studio/gallery/images',
+        returnDetails: true,
+      })
+      setMediaUrl(upload.secure_url)
+      setMediaType(upload.resource_type === 'video' ? 'video' : 'image')
+      if (!title) {
+        setTitle(file.name.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' '))
+      }
+      toast.success('Media uploaded successfully!', { id: 'gal-upload' })
     } catch (err) {
       toast.error('Upload failed: ' + err.message, { id: 'gal-upload' })
     } finally {
@@ -65,21 +78,28 @@ export default function ManageGallery() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!title || !category || !image) {
-      toast.error('Please fill out all fields and select/upload an image')
+    if (!title || !category || !mediaUrl) {
+      toast.error('Please fill out all fields and select/upload media')
       return
     }
 
     setSaving(true)
     try {
-      const newItem = { title, category, image }
+      const newItem = {
+        title,
+        category,
+        image: mediaUrl,
+        media_url: mediaUrl,
+        media_type: mediaType,
+      }
       const { data, error } = await supabase.from('gallery').insert([newItem]).select()
       
       if (error) throw error
       
       toast.success('Gallery item added successfully!')
       setTitle('')
-      setImage('')
+      setMediaUrl('')
+      setMediaType('image')
       loadData()
     } catch (err) {
       toast.error('Failed to add item: ' + err.message)
@@ -125,7 +145,7 @@ export default function ManageGallery() {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
       <div>
         <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#111827', margin: 0 }}>Manage Gallery</h1>
-        <p style={{ fontSize: '14px', color: '#6b7280', marginTop: '4px' }}>Add new project images, specify service categories, and delete work showcase items.</p>
+        <p style={{ fontSize: '14px', color: '#6b7280', marginTop: '4px' }}>Add Cloudinary images/videos, assign gallery categories, and delete showcase items.</p>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '360px 1fr', gap: '20px', alignItems: 'start' }}>
@@ -156,23 +176,27 @@ export default function ManageGallery() {
                 style={{ ...inputStyle, appearance: 'auto', cursor: 'pointer' }}
                 required
               >
-                {services.map(t => (
+                {categories.map(t => (
                   <option key={t} value={t}>{t}</option>
                 ))}
-                {services.length === 0 && (
-                  <option value="">(No services available)</option>
+                {categories.length === 0 && (
+                  <option value="">(No gallery categories available)</option>
                 )}
               </select>
             </div>
 
             <div>
-              <label style={labelStyle}>Project Image</label>
-              {image && (
+              <label style={labelStyle}>Project Media</label>
+              {mediaUrl && (
                 <div style={{ position: 'relative', width: '100%', aspectRatio: '4/3', borderRadius: '8px', overflow: 'hidden', border: '1px solid #e5e7eb', marginBottom: '10px' }}>
-                  <img src={image} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  {mediaType === 'video' ? (
+                    <video src={mediaUrl} muted loop playsInline controls style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    <img src={mediaUrl} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  )}
                   <button
                     type="button"
-                    onClick={() => setImage('')}
+                    onClick={() => { setMediaUrl(''); setMediaType('image') }}
                     style={{ position: 'absolute', top: '8px', right: '8px', background: 'rgba(0,0,0,0.6)', border: 'none', color: '#fff', borderRadius: '50%', width: '28px', height: '28px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}
                   >
                     &times;
@@ -195,7 +219,7 @@ export default function ManageGallery() {
                 >
                   <input
                     type="file"
-                    accept="image/*"
+                    accept="image/*,video/*"
                     onChange={handleFileUpload}
                     disabled={uploading}
                     style={{
@@ -213,8 +237,8 @@ export default function ManageGallery() {
                       <polyline points="17 8 12 3 7 8" />
                       <line x1="12" y1="3" x2="12" y2="15" />
                     </svg>
-                    <span style={{ fontSize: '13px', fontWeight: 700 }}>{uploading ? 'Uploading...' : 'Choose File to Upload'}</span>
-                    <span style={{ fontSize: '11px', color: '#9ca3af' }}>Supports PNG, JPG, WEBP</span>
+                    <span style={{ fontSize: '13px', fontWeight: 700 }}>{uploading ? 'Uploading...' : 'Choose Image or Video'}</span>
+                    <span style={{ fontSize: '11px', color: '#9ca3af' }}>Uploads to Cloudinary gallery folders</span>
                   </div>
                 </div>
               </div>
@@ -241,7 +265,11 @@ export default function ManageGallery() {
             {items.map(item => (
               <div key={item.id} style={{ border: '1px solid #e5e7eb', borderRadius: '10px', overflow: 'hidden', display: 'flex', flexDirection: 'column', background: '#f9fafb' }}>
                 <div style={{ aspectRatio: '4/3', width: '100%', overflow: 'hidden', position: 'relative' }}>
-                  <img src={item.image} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  {(item.media_type || '').toLowerCase() === 'video' ? (
+                    <video src={item.media_url || item.image} muted loop playsInline controls style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    <img src={item.media_url || item.image} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  )}
                   <button
                     onClick={() => handleDelete(item.id)}
                     style={{ position: 'absolute', top: '6px', right: '6px', background: 'rgba(220,38,38,0.9)', border: 'none', color: '#fff', borderRadius: '6px', padding: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}

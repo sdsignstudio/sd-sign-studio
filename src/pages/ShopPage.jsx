@@ -11,6 +11,7 @@ const sortOptions = [
   { value: 'price-desc', label: 'Price: High to Low' },
   { value: 'name-asc', label: 'Name: A-Z' },
 ]
+const PRODUCTS_PER_PAGE = 9
 
 export default function ShopPage() {
   const { country } = useCountry()
@@ -23,6 +24,7 @@ export default function ShopPage() {
   const [parentGroups, setParentGroups] = useState([])
   const [expandedParents, setExpandedParents] = useState({})
   const [loading, setLoading] = useState(true)
+  const [currentPage, setCurrentPage] = useState(1)
 
   // Fetch products and categories from Supabase
   useEffect(() => {
@@ -85,6 +87,16 @@ export default function ShopPage() {
     }
     return items
   }, [activeCategories, searchQuery, sortBy, products, country.code])
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PRODUCTS_PER_PAGE))
+  const paginatedProducts = filtered.slice((currentPage - 1) * PRODUCTS_PER_PAGE, currentPage * PRODUCTS_PER_PAGE)
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [activeCategories, searchQuery, sortBy, country.code])
+
+  useEffect(() => {
+    if (currentPage > totalPages) setCurrentPage(totalPages)
+  }, [currentPage, totalPages])
 
   const toggleCategory = (catName) => {
     setActiveCategories(prev =>
@@ -110,6 +122,7 @@ export default function ShopPage() {
   const clearFilters = () => {
     setActiveCategories([])
     setSearchQuery('')
+    setCurrentPage(1)
   }
 
   return (
@@ -274,11 +287,11 @@ export default function ShopPage() {
           </div>
 
           <div style={{ fontSize: '14px', color: 'var(--black)', fontWeight: 500, marginBottom: '24px' }}>
-            Showing {filtered.length} of {products.length} products found
+            Showing {filtered.length === 0 ? 0 : ((currentPage - 1) * PRODUCTS_PER_PAGE) + 1}-{Math.min(currentPage * PRODUCTS_PER_PAGE, filtered.length)} of {filtered.length} products found
           </div>
 
           <div className="product-grid">
-            {filtered.map(product => (
+            {paginatedProducts.map(product => (
               <Link to={`/shop/${product.id}`} className="product-card" key={product.id} style={{ display: 'flex', flexDirection: 'column' }}>
                 <div className="product-img-wrap">
                   <img className="product-img" src={product.image} alt={product.name} />
@@ -303,6 +316,39 @@ export default function ShopPage() {
             <div style={{ textAlign: 'center', padding: '80px 20px', color: 'var(--black)', background: '#f9f9f9', borderRadius: '16px', marginTop: '24px' }}>
               <p style={{ fontSize: '18px', fontWeight: 600 }}>No products found matching your criteria.</p>
               <button onClick={clearFilters} className="btn-red" style={{ marginTop: '16px' }}>Clear All Filters</button>
+            </div>
+          )}
+
+          {filtered.length > PRODUCTS_PER_PAGE && (
+            <div className="shop-pagination" aria-label="Product pagination">
+              <button
+                type="button"
+                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+              >
+                Prev
+              </button>
+              {Array.from({ length: totalPages }).map((_, index) => {
+                const page = index + 1
+                return (
+                  <button
+                    key={page}
+                    type="button"
+                    className={currentPage === page ? 'active' : ''}
+                    onClick={() => setCurrentPage(page)}
+                    aria-current={currentPage === page ? 'page' : undefined}
+                  >
+                    {page}
+                  </button>
+                )
+              })}
+              <button
+                type="button"
+                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
             </div>
           )}
         </div>

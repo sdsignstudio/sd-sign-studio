@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "db:gallery": "node scripts/setup_gallery_table.js",
     "db:pricing": "node scripts/setup_multi_country_pricing.js",
+    "gallery:cloudinary": "node scripts/sync_cloudinary_gallery.js",
     "gallery:manifest": "node scripts/generate_gallery_manifest.js",
     "preview": "vite preview"
   },

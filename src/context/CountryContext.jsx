@@ -5,7 +5,6 @@ export const COUNTRIES = {
     code: 'IN',
     label: 'India',
     shortLabel: 'IN',
-    flag: '🇮🇳',
     currency: 'INR',
     locale: 'en-IN',
   },
@@ -13,7 +12,6 @@ export const COUNTRIES = {
     code: 'GB',
     label: 'United Kingdom',
     shortLabel: 'UK',
-    flag: '🇬🇧',
     currency: 'GBP',
     locale: 'en-GB',
   },
@@ -29,8 +27,11 @@ function detectInitialCountry() {
   if (saved && COUNTRIES[saved]) return COUNTRIES[saved]
 
   const locale = window.navigator.language || ''
+  const languages = window.navigator.languages || []
+  const localeString = [locale, ...languages].join(' ').toLowerCase()
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || ''
-  if (locale.toLowerCase().includes('in') || timeZone === 'Asia/Kolkata' || timeZone === 'Asia/Calcutta') {
+
+  if (localeString.includes('-in') || timeZone === 'Asia/Kolkata' || timeZone === 'Asia/Calcutta') {
     return COUNTRIES.IN
   }
 
@@ -39,6 +40,23 @@ function detectInitialCountry() {
 
 export function CountryProvider({ children }) {
   const [countryCode, setCountryCode] = useState(() => detectInitialCountry().code)
+
+  useEffect(() => {
+    if (window.localStorage.getItem(STORAGE_KEY)) return
+
+    let cancelled = false
+
+    fetch('https://ipapi.co/json/')
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        if (cancelled || !data?.country_code) return
+        const detectedCode = data.country_code === 'IN' ? 'IN' : data.country_code === 'GB' ? 'GB' : null
+        if (detectedCode) setCountryCode(detectedCode)
+      })
+      .catch(() => {})
+
+    return () => { cancelled = true }
+  }, [])
 
   useEffect(() => {
     window.localStorage.setItem(STORAGE_KEY, countryCode)

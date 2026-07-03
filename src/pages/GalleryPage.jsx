@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import CtaBand from '../components/home/CtaBand'
@@ -13,57 +13,32 @@ const getMediaType = (item) => {
   return /\.(mp4|webm|ogg|mov)$/i.test(url) ? 'video' : 'image'
 }
 
-function GalleryVideoTile({ item }) {
-  const videoRef = useRef(null)
-  const [canLoad, setCanLoad] = useState(false)
-  const [isVisible, setIsVisible] = useState(false)
+const getCloudinaryVideoPoster = (url) => {
+  if (!url?.includes('/video/upload/')) return ''
+  return url
+    .replace('/video/upload/', '/video/upload/so_0,w_700,h_525,c_fill,q_auto,f_jpg/')
+    .replace(/\.(mp4|webm|mov|ogg)(\?.*)?$/i, '.jpg')
+}
 
-  useEffect(() => {
-    const video = videoRef.current
-    if (!video) return
-
-    const observer = new IntersectionObserver(([entry]) => {
-      const visible = entry.isIntersecting && entry.intersectionRatio >= 0.35
-      setIsVisible(visible)
-      if (visible) setCanLoad(true)
-    }, { threshold: [0, 0.35, 0.7] })
-
-    observer.observe(video)
-    return () => observer.disconnect()
-  }, [])
-
-  useEffect(() => {
-    const video = videoRef.current
-    if (!video) return
-
-    if (canLoad && isVisible) {
-      video.play().catch(() => {})
-    } else {
-      video.pause()
-    }
-  }, [canLoad, isVisible])
+function GalleryVideoThumb({ item }) {
+  const poster = getCloudinaryVideoPoster(getMediaUrl(item))
 
   return (
-    <video
-      ref={videoRef}
-      className="gallery-grid-video"
-      src={canLoad ? getMediaUrl(item) : undefined}
-      muted
-      loop
-      playsInline
-      preload="none"
-      style={{
-        width: '100%',
-        height: '100%',
-        objectFit: 'cover',
-        transition: 'transform 0.4s ease'
-      }}
-    />
+    <div className="gallery-video-thumb">
+      {poster ? (
+        <img className="gallery-grid-media" src={poster} alt={item.title || ''} loading="lazy" />
+      ) : (
+        <div className="gallery-video-placeholder">Video</div>
+      )}
+      <span className="gallery-play-badge" aria-hidden="true">
+        <span />
+      </span>
+    </div>
   )
 }
 
-const INITIAL_GALLERY_ITEMS = 12
-const GALLERY_PAGE_SIZE = 12
+const INITIAL_GALLERY_ITEMS = 8
+const GALLERY_PAGE_SIZE = 8
 const COLLAPSED_CATEGORY_COUNT = 5
 
 export default function GalleryPage() {
@@ -198,23 +173,25 @@ export default function GalleryPage() {
                    onMouseEnter={(e) => {
                      e.currentTarget.style.transform = 'translateY(-4px)'
                      e.currentTarget.style.boxShadow = '0 12px 24px rgba(0,0,0,0.08)'
-                     const media = e.currentTarget.querySelector('img, .gallery-grid-video')
+                     const media = e.currentTarget.querySelector('img, .gallery-grid-media')
                      if (media) media.style.transform = 'scale(1.04)'
                    }}
                    onMouseLeave={(e) => {
                      e.currentTarget.style.transform = ''
                      e.currentTarget.style.boxShadow = ''
-                     const media = e.currentTarget.querySelector('img, .gallery-grid-video')
+                     const media = e.currentTarget.querySelector('img, .gallery-grid-media')
                      if (media) media.style.transform = ''
                    }}
                 >
                   <div style={{ overflow: 'hidden', position: 'relative', aspectRatio: '4/3' }}>
                     {getMediaType(item) === 'video' ? (
-                      <GalleryVideoTile item={item} />
+                      <GalleryVideoThumb item={item} />
                     ) : (
                       <img
+                        className="gallery-grid-media"
                         src={getMediaUrl(item)}
                         alt={item.title}
+                        loading="lazy"
                         style={{
                           width: '100%',
                           height: '100%',

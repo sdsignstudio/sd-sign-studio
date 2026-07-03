@@ -887,6 +887,53 @@
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 24px;
 }
+.gallery-grid-media {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.gallery-video-thumb {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #111;
+}
+.gallery-video-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #111827, #1f2937);
+  color: rgba(255,255,255,0.8);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.gallery-play-badge {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(232,0,13,0.92);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.24);
+  transform: translate(-50%, -50%);
+}
+.gallery-play-badge span {
+  width: 0;
+  height: 0;
+  margin-left: 4px;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-left: 15px solid #fff;
+}
 
 /* ── CTA BAND ── */
 .cta-band {

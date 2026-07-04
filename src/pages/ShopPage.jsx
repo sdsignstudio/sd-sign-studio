@@ -12,6 +12,7 @@ const sortOptions = [
   { value: 'name-asc', label: 'Name: A-Z' },
 ]
 const PRODUCTS_PER_PAGE = 9
+const PAGINATION_WINDOW_SIZE = 5
 
 export default function ShopPage() {
   const { country } = useCountry()
@@ -89,6 +90,15 @@ export default function ShopPage() {
   }, [activeCategories, searchQuery, sortBy, products, country.code])
   const totalPages = Math.max(1, Math.ceil(filtered.length / PRODUCTS_PER_PAGE))
   const paginatedProducts = filtered.slice((currentPage - 1) * PRODUCTS_PER_PAGE, currentPage * PRODUCTS_PER_PAGE)
+  const paginationWindowStart = Math.floor((currentPage - 1) / PAGINATION_WINDOW_SIZE) * PAGINATION_WINDOW_SIZE + 1
+  const paginationWindowEnd = Math.min(totalPages, paginationWindowStart + PAGINATION_WINDOW_SIZE - 1)
+  const paginationPages = Array.from(
+    { length: paginationWindowEnd - paginationWindowStart + 1 },
+    (_, index) => paginationWindowStart + index
+  )
+  const showLeadingPaginationDots = paginationWindowStart > 1
+  const showTrailingPaginationDots = paginationWindowEnd < totalPages
+  const nextPaginationPage = paginationWindowEnd + 1
 
   useEffect(() => {
     setCurrentPage(1)
@@ -328,20 +338,31 @@ export default function ShopPage() {
               >
                 Prev
               </button>
-              {Array.from({ length: totalPages }).map((_, index) => {
-                const page = index + 1
-                return (
+              {showLeadingPaginationDots && (
+                <span className="shop-pagination-dots" aria-hidden="true">...</span>
+              )}
+              {paginationPages.map(page => (
+                <button
+                  key={page}
+                  type="button"
+                  className={currentPage === page ? 'active' : ''}
+                  onClick={() => setCurrentPage(page)}
+                  aria-current={currentPage === page ? 'page' : undefined}
+                >
+                  {page}
+                </button>
+              ))}
+              {showTrailingPaginationDots && (
+                <>
+                  <span className="shop-pagination-dots" aria-hidden="true">...</span>
                   <button
-                    key={page}
                     type="button"
-                    className={currentPage === page ? 'active' : ''}
-                    onClick={() => setCurrentPage(page)}
-                    aria-current={currentPage === page ? 'page' : undefined}
+                    onClick={() => setCurrentPage(nextPaginationPage)}
                   >
-                    {page}
+                    {nextPaginationPage}
                   </button>
-                )
-              })}
+                </>
+              )}
               <button
                 type="button"
                 onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}

@@ -10,15 +10,17 @@ const getMediaType = (item) => {
   return /\.(mp4|webm|ogg|mov)$/i.test(url) ? 'video' : 'image'
 }
 
-function PreviewCard({ item, index }) {
+function PreviewCard({ item, index, onOpen }) {
   const isVideo = getMediaType(item) === 'video'
   const mediaUrl = getMediaUrl(item)
 
   return (
-    <Link
-      to={`/gallery?category=${encodeURIComponent(item.category)}`}
+    <button
+      type="button"
+      onClick={() => onOpen(item)}
       className="gallery-preview-card"
       style={{ '--delay': `${index * 80}ms` }}
+      aria-label={`Open ${item.category || 'gallery'} preview`}
     >
       <div className="gallery-preview-media">
         {isVideo ? (
@@ -46,12 +48,13 @@ function PreviewCard({ item, index }) {
           <span>{item.category}</span>
         </div>
       </div>
-    </Link>
+    </button>
   )
 }
 
 export default function GalleryPreview() {
   const [previewItems, setPreviewItems] = useState(HOME_GALLERY_PREVIEW)
+  const [selectedItem, setSelectedItem] = useState(null)
 
   useEffect(() => {
     let cancelled = false
@@ -77,6 +80,17 @@ export default function GalleryPreview() {
     return () => { cancelled = true }
   }, [])
 
+  useEffect(() => {
+    if (!selectedItem) return undefined
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') setSelectedItem(null)
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [selectedItem])
+
   if (previewItems.length === 0) return null
 
   return (
@@ -92,7 +106,7 @@ export default function GalleryPreview() {
 
         <div className="gallery-preview-grid">
           {previewItems.map((item, index) => (
-            <PreviewCard key={getMediaUrl(item) || item.id} item={item} index={index} />
+            <PreviewCard key={getMediaUrl(item) || item.id} item={item} index={index} onOpen={setSelectedItem} />
           ))}
         </div>
 
@@ -100,6 +114,37 @@ export default function GalleryPreview() {
           <Link to="/gallery" className="btn-red">View Full Gallery</Link>
         </div>
       </div>
+
+      {selectedItem && (
+        <div
+          className="home-gallery-lightbox"
+          onClick={() => setSelectedItem(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Gallery preview"
+        >
+          <div className="home-gallery-lightbox-inner" onClick={(event) => event.stopPropagation()}>
+            <button
+              type="button"
+              className="home-gallery-lightbox-close"
+              onClick={() => setSelectedItem(null)}
+              aria-label="Close preview"
+            >
+              &times;
+            </button>
+            {getMediaType(selectedItem) === 'video' ? (
+              <video
+                src={getMediaUrl(selectedItem)}
+                controls
+                autoPlay
+                playsInline
+              />
+            ) : (
+              <img src={getMediaUrl(selectedItem)} alt={selectedItem.title || selectedItem.category || 'Gallery preview'} />
+            )}
+          </div>
+        </div>
+      )}
     </section>
   )
 }

@@ -16,7 +16,7 @@ const getMediaType = (item) => {
 const getCloudinaryVideoPoster = (url) => {
   if (!url?.includes('/video/upload/')) return ''
   return url
-    .replace('/video/upload/', '/video/upload/so_0,w_700,h_525,c_fill,q_auto,f_jpg/')
+    .replace('/video/upload/', '/video/upload/so_0,w_700,h_1244,c_fill,q_auto,f_jpg/')
     .replace(/\.(mp4|webm|mov|ogg)(\?.*)?$/i, '.jpg')
 }
 
@@ -183,7 +183,7 @@ export default function GalleryPage() {
                      if (media) media.style.transform = ''
                    }}
                 >
-                  <div style={{ overflow: 'hidden', position: 'relative', aspectRatio: '4/3' }}>
+                  <div style={{ overflow: 'hidden', position: 'relative', aspectRatio: '9/16' }}>
                     {getMediaType(item) === 'video' ? (
                       <GalleryVideoThumb item={item} />
                     ) : (

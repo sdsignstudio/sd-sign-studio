@@ -395,11 +395,13 @@
 
 .cat-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 32px 16px;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 190px));
+  gap: 38px 28px;
+  justify-content: center;
+  justify-items: center;
 }
 @media (min-width: 1100px) {
-  .cat-grid { grid-template-columns: repeat(7, 1fr); gap: 40px 20px; }
+  .cat-grid { grid-template-columns: repeat(auto-fit, minmax(190px, 210px)); gap: 44px 32px; }
 }
 .cat-card {
   background: transparent;
@@ -412,7 +414,7 @@
   transform: translateY(-4px); 
 }
 .cat-logo-circle {
-  width: 110px; height: 110px;
+  width: 148px; height: 148px;
   background: var(--red);
   border-radius: 50%;
   border: 6px solid var(--black);
@@ -423,7 +425,7 @@
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .cat-logo-circle img {
-  width: 60%; height: 60%;
+  width: 66%; height: 66%;
   object-fit: contain;
   filter: brightness(0); 
 }
@@ -668,6 +670,12 @@
 }
 .gallery-preview-card {
   display: block;
+  width: 100%;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
   border-radius: 12px;
   overflow: hidden;
   background: #111;
@@ -721,6 +729,51 @@
   display: block;
   font-size: 18px;
   line-height: 1.2;
+}
+.home-gallery-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 72px 24px 28px;
+  background: rgba(0,0,0,0.92);
+}
+.home-gallery-lightbox-inner {
+  position: relative;
+  width: min(920px, 100%);
+  max-height: 82vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.home-gallery-lightbox-inner img,
+.home-gallery-lightbox-inner video {
+  width: 100%;
+  max-height: 82vh;
+  object-fit: contain;
+  border-radius: 10px;
+  background: #000;
+  box-shadow: 0 24px 70px rgba(0,0,0,0.5);
+}
+.home-gallery-lightbox-close {
+  position: absolute;
+  top: -52px;
+  right: 0;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255,255,255,0.28);
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  font-size: 30px;
+  line-height: 1;
+  cursor: pointer;
+}
+.home-gallery-lightbox-close:hover {
+  background: var(--red);
+  border-color: var(--red);
 }
 
 /* GALLERY HERO BANNER */
@@ -1027,7 +1080,8 @@ footer {
   }
   .nav-logo { justify-self: center; }
   .nav-icons { justify-self: end; }
-  .cat-grid { grid-template-columns: repeat(3, 1fr); }
+  .cat-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .cat-logo-circle { width: 124px; height: 124px; }
   .hero-headline { font-size: 48px; }
   .about-inner { grid-template-columns: 1fr; }
   .about-badge { width: 100px; height: 100px; }
@@ -1086,7 +1140,8 @@ footer {
   .hero-sub {
     margin-left: auto; margin-right: auto;
   }
-  .cat-grid { grid-template-columns: repeat(3, 1fr); }
+  .cat-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .cat-logo-circle { width: 104px; height: 104px; border-width: 5px; }
   .hero-headline { font-size: 38px; }
   .footer-inner { grid-template-columns: 1fr; }
   .feat-arr { display: none; }
@@ -1099,7 +1154,15 @@ footer {
   .gallery-category-section { padding: 34px 16px 0; }
   .gallery-category-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
   .gallery-category-grid.collapsed {
-    grid-auto-columns: minmax(142px, 1fr);
+    grid-auto-flow: row;
+    grid-auto-columns: initial;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow-x: visible;
+    padding-bottom: 0;
+    scroll-snap-type: none;
+  }
+  .gallery-category-grid.collapsed .gallery-category-card {
+    scroll-snap-align: unset;
   }
   .gallery-category-card { min-height: 112px; padding: 16px 10px 18px; }
   .gallery-category-icon { width: 36px; height: 36px; }
@@ -1248,7 +1311,8 @@ footer {
   justify-content: center;
   gap: 8px;
   flex-wrap: wrap;
-  margin-top: 36px;
+  width: 100%;
+  margin: 36px auto 0;
 }
 .shop-pagination button {
   min-width: 38px;
@@ -1274,6 +1338,13 @@ footer {
 .shop-pagination button:disabled {
   opacity: 0.45;
   cursor: not-allowed;
+}
+.shop-pagination-dots {
+  min-width: 24px;
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 900;
+  text-align: center;
 }
 .product-card {
   background: #fff; border-radius: 16px; overflow: hidden;

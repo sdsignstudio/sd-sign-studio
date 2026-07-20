@@ -13,26 +13,19 @@ const getMediaType = (item) => {
   return /\.(mp4|webm|ogg|mov)$/i.test(url) ? 'video' : 'image'
 }
 
-const getCloudinaryVideoPoster = (url) => {
-  if (!url?.includes('/video/upload/')) return ''
-  return url
-    .replace('/video/upload/', '/video/upload/so_0,w_700,h_1244,c_fill,q_auto,f_jpg/')
-    .replace(/\.(mp4|webm|mov|ogg)(\?.*)?$/i, '.jpg')
-}
 
 function GalleryVideoThumb({ item }) {
-  const poster = getCloudinaryVideoPoster(getMediaUrl(item))
-
   return (
     <div className="gallery-video-thumb">
-      {poster ? (
-        <img className="gallery-grid-media" src={poster} alt={item.title || ''} loading="lazy" />
-      ) : (
-        <div className="gallery-video-placeholder">Video</div>
-      )}
-      <span className="gallery-play-badge" aria-hidden="true">
-        <span />
-      </span>
+      <video
+        src={getMediaUrl(item)}
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.4s ease' }}
+      />
     </div>
   )
 }
@@ -152,7 +145,8 @@ export default function GalleryPage() {
         </section>
 
         {/* Gallery Grid */}
-        <div style={{ maxWidth: '1200px', margin: '36px auto 120px', padding: '0 24px' }}>
+        <div style={{ padding: '36px 24px 120px' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           {loading ? (
             <div style={{ textAlign: 'center', color: 'var(--text-light)', padding: '60px' }}>Loading gallery...</div>
           ) : (
@@ -247,6 +241,7 @@ export default function GalleryPage() {
               </button>
             </div>
           )}
+        </div>
         </div>
 
         {/* Lightbox Zoom Modal */}

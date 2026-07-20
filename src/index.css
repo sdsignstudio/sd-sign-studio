@@ -1068,6 +1068,8 @@ footer {
 /* ── RESPONSIVE ── */
 @media (max-width: 960px) {
   .nav-links, .nav-cta-btn { display: none; }
+  .nav-icons .country-select-wrap { display: none; }
+  .nav-country-desktop { display: none; }
   .nav-inner {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
